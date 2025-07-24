@@ -1,0 +1,42 @@
+<TabControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			xmlns:i="https://github.com/projektanker/icons.avalonia"
+            xmlns:converters="clr-namespace:DebuggingTool.Converters"
+            xmlns:views="clr-namespace:DebuggingTool.Views"
+            mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+            x:Class="DebuggingTool.Views.MainTabControl"
+            TabStripPlacement="Bottom"
+            Classes="Center MainTab"
+            ShellView.EnableSafeAreaForBottom="False">
+	<TabControl.ItemTemplate>
+		<DataTemplate>
+			<Grid RowDefinitions="*,*" Width="70">
+				<i:Icon Value="{Binding Instance.Icon}"
+				       HorizontalAlignment="Center"
+				       Height="24"
+				       Margin="2"/>
+				<TextBlock Grid.Row="1"
+				           DataContext="{Binding Instance}"
+				           Text="{Binding Path=(NavigationBar.Header)}"
+				           FontSize="14"
+				           HorizontalAlignment="Center"></TextBlock>
+			</Grid>
+		</DataTemplate>
+	</TabControl.ItemTemplate>
+	<TabControl.ContentTemplate>
+		<DataTemplate>
+			<ContentPresenter Content="{Binding Instance}"></ContentPresenter>
+		</DataTemplate>
+	</TabControl.ContentTemplate>
+	<TabControl.Styles>
+		<Style Selector="TabControl.MainTab /template/ Border > DockPanel > Border">
+			<Setter Property="Padding"
+			        Value="{Binding BottomSafePadding, RelativeSource={RelativeSource AncestorType={x:Type ShellView}}}"></Setter>
+		</Style>
+		<Style Selector="TabControl.MainTab /template/ Border > DockPanel > ItemsPresenter">
+			<Setter Property="HorizontalAlignment" Value="Center" />
+		</Style>
+	</TabControl.Styles>
+</TabControl>

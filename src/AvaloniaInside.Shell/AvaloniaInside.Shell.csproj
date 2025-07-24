@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<Version>1.3.2</Version>
+		<Title>Shell view for Avalonia</Title>
+		<Description>Shell reduces the complexity of mobile/desktop application development by providing the fundamental features that most applications require</Description>
+		<Copyright>AvaloniaInside</Copyright>
+		<PackageProjectUrl>https://github.com/AvaloniaInside/Shell</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/AvaloniaInside/Shell</RepositoryUrl>
+		<PackageTags>avalonia,shell</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+		<AvaloniaResource Include="**\*.axaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Themes.Fluent" />
+		<PackageReference Include="Avalonia.ReactiveUI" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+	</ItemGroup>
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Assets\avalonia-logo.ico" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="..\..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+</Project>

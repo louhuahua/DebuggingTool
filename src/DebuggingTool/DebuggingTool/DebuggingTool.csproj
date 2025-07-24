@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+        <TrimmerRootDescriptor Include="Roots.xml" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" />
+        <PackageReference Include="Avalonia.Themes.Fluent" />
+        <PackageReference Include="Avalonia.ReactiveUI" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Include="Avalonia.Diagnostics" />
+        <PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Projektanker.Icons.Avalonia" />
+		<PackageReference Include="Projektanker.Icons.Avalonia.FontAwesome" />
+		<PackageReference Include="Projektanker.Icons.Avalonia.MaterialDesign" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Products.json" />
+      <EmbeddedResource Include="Resources\Products.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\AvaloniaInside.Shell\AvaloniaInside.Shell.csproj" />
+      <ProjectReference Include="..\..\Infrustructure\Station.DAL\Station.DAL.csproj" />
+      <ProjectReference Include="..\..\Infrustructure\Station.Hardware\Station.Hardware.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\HelloPage.axaml.cs">
+        <DependentUpon>HelloPage.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+</Project>

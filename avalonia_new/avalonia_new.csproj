@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <AvaloniaResource Remove="Assets\Lang\Resources.en-US.resx" />
+    <AvaloniaResource Remove="Assets\Lang\Resources.ne-NP.resx" />
+    <AvaloniaResource Remove="Assets\Lang\Resources.resx" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ApplicationDefinition Include="Assets\avalonia-logo.svg" />
+    <ApplicationDefinition Include="Assets\Fonts\material-font.ttf" />
+    <ApplicationDefinition Include="Assets\Colors\AppResources.axaml" />
+    <ApplicationDefinition Include="Assets\Styles\AppStyles.axaml" />
+    <ApplicationDefinition Include="Assets\Lang\Resources.Designer.cs" />
+    <ApplicationDefinition Include="Assets\Lang\Resources.resx" />
+  </ItemGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.2" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.2" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+	<PackageReference Include="Avalonia.Svg" Version="11.3.0" />
+	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+	<PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11073" />
+	<PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
+	<PackageReference Include="Sandreas.Avalonia.Preferences" Version="0.0.3" />
+	<PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.6" />
+	<PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.3.0.6" />
+
+
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
+    <PackageReference Include="SukiUI" Version="6.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Assets\Colors\AppResources.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+    <AvaloniaXaml Update="Assets\Styles\AppStyles.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+    <AvaloniaXaml Update="Views\ChildView.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Assets\Lang\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ExploreView.axaml.cs">
+      <DependentUpon>ExploreView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\HomePageContainerView.axaml.cs">
+      <DependentUpon>HomePageContainerView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\AboutView.axaml.cs">
+      <DependentUpon>AboutView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ChildView.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>ChildView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Assets\Lang\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+</Project>

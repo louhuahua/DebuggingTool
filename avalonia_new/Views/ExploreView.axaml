@@ -1,0 +1,129 @@
+<UserControl
+    x:Class="avalonia_new.Views.ExploreView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lang="clr-namespace:avalonia_new.Assets.Lang"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:vm="clr-namespace:avalonia_new.ViewModels"
+    x:Name="ExplorePage"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:DataType="vm:AboutViewModel"
+    mc:Ignorable="d">
+    <Grid>
+       
+        <Popup
+            IsOpen="{Binding ShowPopup}"
+            PlacementMode="Center"
+            PlacementTarget="{Binding #ExplorePage}"
+            Topmost="True">
+            <Border
+                Padding="24"
+                Background="{DynamicResource ToastBackground}"
+                CornerRadius="8">
+                <Grid RowDefinitions="Auto,12,Auto,24,Auto">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="32"
+                        Text="Alert!" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Text="Click close to dismiss alert!!" />
+                    <Button
+                        Grid.Row="4"
+                        Padding="8,6"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Command="{Binding ClosePopup}"
+                        Content="Close"
+                        Foreground="{DynamicResource WhiteColor}" />
+                </Grid>
+
+            </Border>
+        </Popup>
+        <ScrollViewer>
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="25">
+                <Image
+                    Width="160"
+                    Height="160"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Source="avares://avalonia_new/Assets/avalonia-logo.ico" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    FontSize="32"
+                    Text="{x:Static lang:Resources.Explore}" />
+
+                <ListBox
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ItemsSource="{Binding ExploreList}">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                Margin="0,12"
+                                Background="Transparent"
+                                Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,12,0,0"
+                                    HorizontalAlignment="Left"
+                                    FontSize="18"
+                                    Text="{Binding Title}" />
+                                <ItemsControl ItemsSource="{Binding FeatureList}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel
+                                                Margin="0,12"
+                                                Background="Transparent"
+                                                Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button
+                                                Margin="0,12,12,0"
+                                                Padding="8,6"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                Command="{Binding $parent[ListBox].((vm:ExploreViewModel)DataContext).ButtonCommand}"
+                                                CommandParameter="{Binding}"
+                                                Foreground="{DynamicResource WhiteColor}">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <TextBlock
+                                                        Width="18"
+                                                        Height="18"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="{StaticResource Material-Font}"
+                                                        FontSize="18"
+                                                        Foreground="{DynamicResource WhiteColor}"
+                                                        Text="{Binding FontIcon}" />
+                                                    <TextBlock
+                                                        VerticalAlignment="Center"
+                                                        FontSize="16"
+                                                        Text="{Binding FeatureName}" />
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,52 @@
+<UserControl
+    x:Class="avalonia_new.Views.ChildView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lang="clr-namespace:avalonia_new.Assets.Lang"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:vm="clr-namespace:avalonia_new.ViewModels"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:DataType="vm:WelcomeViewModel"
+    mc:Ignorable="d">
+    <StackPanel
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Spacing="25">
+        <Image
+            Width="160"
+            Height="160"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Source="avares://avalonia_new/Assets/avalonia-logo.ico" />
+        <TextBlock
+            HorizontalAlignment="Center"
+            FontSize="32"
+            Text="{x:Static lang:Resources.HelloWorld}" />
+        <TextBlock HorizontalAlignment="Center" Text="{x:Static lang:Resources.WelcomeToAvalonia}" />
+        <Button
+            Grid.Row="9"
+            Padding="8,6"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Center"
+            Command="{Binding GoBackCommand}"
+            Foreground="White">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <TextBlock
+                    Width="18"
+                    Height="18"
+                    VerticalAlignment="Center"
+                    FontFamily="{StaticResource Material-Font}"
+                    FontSize="18"
+                    Foreground="{DynamicResource WhiteColor}"
+                    Text="&#xf04d;" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Text="Go Back" />
+            </StackPanel>
+        </Button>
+
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,50 @@
+<UserControl
+    x:Class="avalonia_new.Views.LoginView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lang="clr-namespace:avalonia_new.Assets.Lang"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:vm="clr-namespace:avalonia_new.ViewModels"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:DataType="vm:LoginViewModel"
+    mc:Ignorable="d">
+    <ScrollViewer>
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="25">
+            <Image
+                Width="160"
+                Height="160"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="avares://avalonia_new/Assets/avalonia-logo.ico" />
+            <Border Padding="14">
+                <Grid RowDefinitions="Auto,8,Auto,24,Auto,8,Auto,32,Auto">
+                    <TextBlock Grid.Row="0" Text="{x:Static lang:Resources.UserName}" />
+                    <TextBox
+                        Grid.Row="2"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding Username, Mode=TwoWay}"
+                        Watermark="{x:Static lang:Resources.EnterUsername}" />
+                    <TextBlock Grid.Row="4" Text="{x:Static lang:Resources.Password}" />
+                    <TextBox
+                        Grid.Row="6"
+                        Text="{Binding Password, Mode=TwoWay}"
+                        Watermark="{x:Static lang:Resources.EnterPassword}" />
+                    <Button
+                        Grid.Row="9"
+                        Padding="12,8"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Command="{Binding LoginCommand}"
+                        Content="{x:Static lang:Resources.Login}"
+                        Foreground="White" />
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

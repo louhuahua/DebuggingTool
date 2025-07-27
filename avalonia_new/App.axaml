@@ -17,7 +17,9 @@
         <FluentTheme />
         <StyleInclude Source="/Assets/Styles/AppStyles.axaml" />
     </Application.Styles>-->
-
+    <Application.Resources>
+        <FontFamily x:Key="MaterialIcons">avares://avalonia_new/Assets/Fonts/MaterialIcons-Regular.ttf#Material Icons</FontFamily>
+    </Application.Resources>
     <Application.Styles>
         <sukiUi:SukiTheme ThemeColor="Blue" />
     </Application.Styles>

@@ -14,7 +14,7 @@ namespace avalonia_new.ViewModels
         public override async void OnIsActiveChanged()
         {
             await Task.Delay(200);
-            _regionManager.RequestNavigate(RegionNames.CONTENT_REGION, nameof(LoginView));
+            _regionManager.RequestNavigate(RegionNames.CONTENT_REGION, nameof(HomePageContainerView));
         }
     }
 }

@@ -15,9 +15,5 @@
     mc:Ignorable="d">
     <Grid>
         <ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.CONTENT_REGION}" />
-        <Panel
-            x:Name="ToastContainer"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom" />
     </Grid>
 </Window>

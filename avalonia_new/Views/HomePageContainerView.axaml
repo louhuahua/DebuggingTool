@@ -32,15 +32,15 @@
                 <ItemsPanelTemplate>
                     <UniformGrid
                         Height="60"
-                        Columns="3"
+                        Columns="2"
                         Rows="1" />
                 </ItemsPanelTemplate>
             </TabControl.ItemsPanel>
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Classes="TabFontIcon" Text="&#xf2dc;" />
-                        <TextBlock Classes="TabName" Text="{x:Static lang:Resources.Home}" />
+                        <TextBlock FontFamily="{StaticResource MaterialIcons}" Text="&#xefc2;" />
+                        <TextBlock Classes="TabName" Text="PLC" />
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
@@ -51,16 +51,16 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Classes="TabFontIcon" Text="&#xf18c;" />
-                        <TextBlock Classes="TabName" Text="{x:Static lang:Resources.Explore}" />
+                        <TextBlock FontFamily="{StaticResource MaterialIcons}" Text="&#xe157;" />
+                        <TextBlock Classes="TabName" Text="TCP" />
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
-                    <view:ExploreView />
+					<view:TCPView />
                 </TabItem.Content>
             </TabItem>
 
-            <TabItem>
+            <!--<TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Classes="TabFontIcon" Text="&#xf2fc;" />
@@ -70,7 +70,7 @@
                 <TabItem.Content>
                     <view:AboutView />
                 </TabItem.Content>
-            </TabItem>
+            </TabItem>-->
 
         </TabControl>
     </Grid>

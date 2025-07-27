@@ -1,37 +1,33 @@
-﻿
+﻿using System.Windows.Input;
 using avalonia_new.Region;
 using avalonia_new.Views;
 using Prism.Commands;
 using Prism.Regions;
-using System.Windows.Input;
+using ReactiveUI.Fody.Helpers;
 
 namespace avalonia_new.ViewModels
 {
     public class LoginViewModel : ViewModelBase
     {
-        private string _Username;
-        public string Username
-        {
-            get => _Username;
-            set => SetProperty(ref _Username, value);
-        }
+        [Reactive]
+        public string Username { get; set; }
 
-        private string _Password;
-        public string Password
-        {
-            get => _Password;
-            set => SetProperty(ref _Password, value);
-        }
+        [Reactive]
+        public string Password { get; set; }
         public ICommand LoginCommand { get; }
 
-        public LoginViewModel(IRegionManager regionManager) : base(regionManager)
+        public LoginViewModel(IRegionManager regionManager)
+            : base(regionManager)
         {
             LoginCommand = new DelegateCommand(LoginUser);
         }
 
         private void LoginUser()
-        {    
-            _regionManager.RequestNavigate(RegionNames.CONTENT_REGION, nameof(HomePageContainerView));
+        {
+            _regionManager.RequestNavigate(
+                RegionNames.CONTENT_REGION,
+                nameof(HomePageContainerView)
+            );
         }
     }
 }

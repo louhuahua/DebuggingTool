@@ -19,12 +19,12 @@ namespace avalonia_new;
 
 public class App : PrismApplication
 {
-    public new static App? Current => Application.Current as App;
+    //public new static App? Current => Application.Current as App;
 
-    /// <summary>
-    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
-    /// </summary>
-    public IServiceProvider? Services { get; private set; }
+    ///// <summary>
+    ///// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
+    ///// </summary>
+    //public IServiceProvider? Services { get; private set; }
     /// <summary>App entry point.</summary>
     public App()
     {
@@ -40,6 +40,7 @@ public class App : PrismApplication
     {
         #region Services 
         // Services
+        containerRegistry.RegisterSingleton<Preferences>();
         #endregion
 
         // Views - Region Navigation
@@ -49,8 +50,7 @@ public class App : PrismApplication
         containerRegistry.RegisterForNavigation<WelcomeView, WelcomeViewModel>();
         containerRegistry.RegisterForNavigation<HomePageContainerView, HomePageContainerViewModel>();
         containerRegistry.RegisterForNavigation<AboutView, AboutViewModel>();
-        containerRegistry.RegisterForNavigation<ExploreView, ExploreViewModel>();
-        containerRegistry.RegisterForNavigation<ChildView, ChildViewModel>();
+        //containerRegistry.RegisterForNavigation<ExploreView, ExploreViewModel>();
     }
 
     protected override AvaloniaObject CreateShell()
@@ -65,9 +65,9 @@ public class App : PrismApplication
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var services = new ServiceCollection();        
-        Services = services.BuildServiceProvider();
-        services.AddSingleton<Preferences>();
+        //var services = new ServiceCollection();        
+        //Services = services.BuildServiceProvider();
+        //services.AddSingleton<Preferences>();
         base.OnFrameworkInitializationCompleted();
     }
     protected override void OnInitialized()

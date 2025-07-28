@@ -4,6 +4,8 @@ using Android.OS;
 using Android.Views;
 using Avalonia;
 using Avalonia.Android;
+using Projektanker.Icons.Avalonia;
+using Projektanker.Icons.Avalonia.MaterialDesign;
 
 namespace avalonia_new.Android;
 
@@ -12,7 +14,10 @@ namespace avalonia_new.Android;
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,
-    ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
+    ConfigurationChanges = ConfigChanges.Orientation
+        | ConfigChanges.ScreenSize
+        | ConfigChanges.UiMode
+)]
 public class MainActivity : AvaloniaMainActivity<App>
 {
     protected override void OnCreate(Bundle? savedInstanceState)
@@ -23,9 +28,11 @@ public class MainActivity : AvaloniaMainActivity<App>
         }
         base.OnCreate(savedInstanceState);
     }
+
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
-        return base.CustomizeAppBuilder(builder)
-            .WithInterFont();
+        IconProvider.Current.Register<MaterialDesignIconProvider>();
+
+        return base.CustomizeAppBuilder(builder).WithInterFont();
     }
 }

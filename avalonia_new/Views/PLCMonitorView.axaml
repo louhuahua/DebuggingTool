@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="avalonia_new.Views.WelcomeView"
+    x:Class="avalonia_new.Views.PLCMonitorView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,7 @@
     xmlns:prism="http://prismlibrary.com/"
     xmlns:vm="clr-namespace:avalonia_new.ViewModels"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    x:DataType="vm:WelcomeViewModel"
+    x:DataType="vm:PLCMonitorViewModel"
     mc:Ignorable="d">
     <StackPanel
         HorizontalAlignment="Center"

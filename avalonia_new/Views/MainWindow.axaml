@@ -9,6 +9,8 @@
     xmlns:views="clr-namespace:avalonia_new.Views"
     xmlns:vm="using:avalonia_new.ViewModels"
     Title="avalonia_new"
+    Width="315"
+    Height="700"
     prism:ViewModelLocator.AutoWireViewModel="True"
     x:DataType="vm:MainViewModel"
     Icon="/Assets/avalonia-logo.ico"

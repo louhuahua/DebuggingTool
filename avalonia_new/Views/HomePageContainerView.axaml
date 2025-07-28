@@ -5,11 +5,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+    xmlns:ic="https://github.com/projektanker/icons.avalonia"
     xmlns:lang="clr-namespace:avalonia_new.Assets.Lang"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:view="clr-namespace:avalonia_new.Views"
     xmlns:vm="clr-namespace:avalonia_new.ViewModels"
+    Width="315"
+    Height="700"
     prism:ViewModelLocator.AutoWireViewModel="True"
     x:DataType="vm:HomePageContainerViewModel"
     mc:Ignorable="d">
@@ -39,24 +42,30 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="{StaticResource MaterialIcons}" Text="&#xefc2;" />
-                        <TextBlock Classes="TabName" Text="PLC" />
+                        <ic:Icon FontSize="15" Value="mdi-monitor-dashboard" />
+                        <TextBlock
+                            Classes="TabName"
+                            FontSize="15"
+                            Text="PLC Monitor" />
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
-                    <view:WelcomeView />
+					<view:PLCMonitorView />
                 </TabItem.Content>
             </TabItem>
 
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock FontFamily="{StaticResource MaterialIcons}" Text="&#xe157;" />
-                        <TextBlock Classes="TabName" Text="TCP" />
+                        <ic:Icon FontSize="15" Value="mdi-ip-network" />
+                        <TextBlock
+                            Classes="TabName"
+                            FontSize="15"
+                            Text="TCP Client" />
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
-					<view:TCPView />
+                    <view:TCPView />
                 </TabItem.Content>
             </TabItem>
 

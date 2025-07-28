@@ -47,7 +47,7 @@ public class App : PrismApplication
         containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
         containerRegistry.RegisterForNavigation<LoginView, LoginViewModel>();
         containerRegistry.RegisterForNavigation<LandingView, LandingViewModel>();
-        containerRegistry.RegisterForNavigation<WelcomeView, WelcomeViewModel>();
+        containerRegistry.RegisterForNavigation<PLCMonitorView, PLCMonitorViewModel>();
         containerRegistry.RegisterForNavigation<HomePageContainerView, HomePageContainerViewModel>();
         containerRegistry.RegisterForNavigation<AboutView, AboutViewModel>();
         //containerRegistry.RegisterForNavigation<ExploreView, ExploreViewModel>();

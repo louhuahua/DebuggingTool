@@ -70,6 +70,9 @@
     <Compile Update="Views\AboutView.axaml.cs">
       <DependentUpon>AboutView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PLCMonitorView.axaml.cs">
+      <DependentUpon>PLCMonitorView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 	<ItemGroup>

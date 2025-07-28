@@ -1,0 +1,33 @@
+<UserControl
+    x:Class="DebuggingTool.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dialogs="using:AvaloniaDialogs.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:region="clr-namespace:DebuggingTool.Region"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:DataType="vm:MainViewModel"
+    mc:Ignorable="d">
+    <!--<Grid>
+		<ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.CONTENT_REGION}" />
+		<Panel
+            x:Name="ToastContainer"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom" />
+	</Grid>-->
+    <dialogs:ReactiveDialogHost CloseOnClickAway="True">
+        <Grid>
+            <ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.CONTENT_REGION}" />
+            <dialogs:Snackbar
+                Name="Snackbar"
+				Width="280"
+                VerticalAlignment="Top"
+                Background="#83cee0"
+                 />
+        </Grid>
+    </dialogs:ReactiveDialogHost>
+</UserControl>

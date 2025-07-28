@@ -1,0 +1,27 @@
+<Window
+    x:Class="DebuggingTool.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:region="clr-namespace:DebuggingTool.Region"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    xmlns:views="clr-namespace:DebuggingTool.Views"
+    xmlns:vm="using:DebuggingTool.ViewModels"
+    Title="DebuggingTool"
+    Width="315"
+    Height="700"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:DataType="vm:MainViewModel"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d">
+    <Grid>
+        <!--<ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.CONTENT_REGION}" />
+        <Panel
+            x:Name="ToastContainer"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom" />-->
+		<views:MainView/>
+    </Grid>
+</Window>

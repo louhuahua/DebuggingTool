@@ -1,0 +1,22 @@
+<UserControl
+    x:Class="DebuggingTool.Views.LandingView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    x:DataType="vm:LandingViewModel"
+    mc:Ignorable="d">
+    <Grid>
+        <Image
+            Width="160"
+            Height="160"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Source="avares://DebuggingTool/Assets/avalonia-logo.ico" />
+    </Grid>
+</UserControl>

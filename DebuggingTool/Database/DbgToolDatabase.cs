@@ -8,21 +8,21 @@ namespace DebuggingTool.Database;
 
 public class DbgToolDatabase
 {
-    SQLiteAsyncConnection database;
+    public SQLiteAsyncConnection Client { get; private set; }
 
     public async Task InitAsync()
     {
         try
         {
-            if (database is not null)
+            if (Client is not null)
                 return;
 
-            database = new SQLiteAsyncConnection(DBConstants.GetAppDataPath(), DBConstants.Flags);
-            var count = await database.CreateTableAsync<PLCConfig>();
-            var count1 = await database.CreateTableAsync<MonitorItem>();
+            Client = new SQLiteAsyncConnection(DBConstants.GetAppDataPath(), DBConstants.Flags);
+            var count = await Client.CreateTableAsync<PLCConfig>();
+            var count1 = await Client.CreateTableAsync<MonitorItem>();
 
-            var plcConfigList = await database.Table<PLCConfig>().ToListAsync();
-            var monitorItemList = await database.Table<MonitorItem>().ToListAsync();
+            var plcConfigList = await Client.Table<PLCConfig>().ToListAsync();
+            var monitorItemList = await Client.Table<MonitorItem>().ToListAsync();
 
             if (plcConfigList.Count == 0 && monitorItemList.Count == 0)
             {
@@ -30,7 +30,7 @@ public class DbgToolDatabase
                 {
                     Name = "Default PLC"
                 };
-                var result = await database.InsertAsync(plcConfig);
+                var result = await Client.InsertAsync(plcConfig);
 
                 if (result > 0)
                 {
@@ -44,7 +44,7 @@ public class DbgToolDatabase
                         Count = 1,
                         DB = plcConfig.DBNumber
                     };
-                    await database.InsertAsync(monitorItem);
+                    await Client.InsertAsync(monitorItem);
                 }
             }
         }

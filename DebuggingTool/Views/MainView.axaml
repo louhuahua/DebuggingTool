@@ -11,23 +11,16 @@
     xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
     prism:ViewModelLocator.AutoWireViewModel="True"
     x:DataType="vm:MainViewModel"
+	x:CompileBindings="True"
     mc:Ignorable="d">
-    <!--<Grid>
-		<ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.CONTENT_REGION}" />
-		<Panel
-            x:Name="ToastContainer"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom" />
-	</Grid>-->
     <dialogs:ReactiveDialogHost CloseOnClickAway="True">
         <Grid>
             <ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.CONTENT_REGION}" />
             <dialogs:Snackbar
                 Name="Snackbar"
-				Width="280"
+                Width="250"
                 VerticalAlignment="Top"
-                Background="#83cee0"
-                 />
+                Background="#83cee0" />
         </Grid>
     </dialogs:ReactiveDialogHost>
 </UserControl>

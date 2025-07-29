@@ -1,9 +1,9 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Preferences;
+using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using DebuggingTool.Constants;
 using DebuggingTool.Region;
@@ -13,9 +13,8 @@ using DebuggingTool.Views;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Regions;
-using SukiUI.Controls;
-using SukiUI.Dialogs;
-using SukiUI.Toasts;
+using ReactiveUI;
+using System;
 
 namespace DebuggingTool;
 
@@ -64,6 +63,7 @@ public class App : PrismApplication
     public override void OnFrameworkInitializationCompleted()
     {
         base.OnFrameworkInitializationCompleted();
+        RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
     }
 
     protected override void OnInitialized()

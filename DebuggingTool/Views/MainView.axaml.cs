@@ -1,9 +1,9 @@
-﻿using System;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
+using Avalonia.Interactivity;
+using AvaloniaDialogs.Views;
 using DebuggingTool.Model;
-using DebuggingTool.Services;
 using ReactiveUI;
-using SukiUI.Controls;
+using System;
 
 namespace DebuggingTool.Views;
 
@@ -16,7 +16,19 @@ public partial class MainView : UserControl
         MessageBus
             .Current.Listen<SnackBarMessage>()
             .Subscribe(msg =>
-                Snackbar.Show(msg.Message, TimeSpan.FromSeconds(msg.Duration), msg.ActionText)
+                Snackbar.Show(msg.Message, TimeSpan.FromSeconds(msg.Duration), msg.ActionText,msg.Action)
             );
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        var insetsManager = TopLevel.GetTopLevel(this)?.InsetsManager;
+
+        if (insetsManager != null)
+        {
+            insetsManager.DisplayEdgeToEdge = true;
+            insetsManager.IsSystemBarVisible = false;
+        }
     }
 }

@@ -6,11 +6,11 @@
     xmlns:sukiUi="clr-namespace:SukiUI;assembly=SukiUI"
     RequestedThemeVariant="Default">
     <Application.Resources>
-        <!--<FontFamily x:Key="MaterialIcons">avares://avalonia_new/Assets/Fonts/MaterialIcons.ttf#Material Design Icons</FontFamily>-->
         <FontFamily x:Key="MaterialIcons">avares://DebuggingTool/Assets/Fonts/MaterialIcons-Regular.ttf#Material Icons</FontFamily>
     </Application.Resources>
     <Application.Styles>
         <sukiUi:SukiTheme ThemeColor="Blue" />
         <dialogHostAvalonia:DialogHostStyles />
+
     </Application.Styles>
 </Application>

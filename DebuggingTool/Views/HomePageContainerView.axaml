@@ -15,20 +15,10 @@
     x:DataType="vm:HomePageContainerViewModel"
     mc:Ignorable="d">
     <Grid>
-        <Panel
-            Background="{DynamicResource PopupBackgroundColor}"
-            IsVisible="{Binding ShowPopup}"
-            ZIndex="1" />
         <TabControl
             x:Name="WaiterTab"
             Classes="Tabcontroller"
-            SelectedIndex="{Binding SelectedTabIndex}"
             TabStripPlacement="Bottom">
-            <i:Interaction.Behaviors>
-                <ia:EventTriggerBehavior EventName="SelectionChanged">
-                    <ia:InvokeCommandAction Command="{Binding ChangeTabCommand}" CommandParameter="{Binding ElementName=WaiterTab ,Path=SelectedIndex}}" />
-                </ia:EventTriggerBehavior>
-            </i:Interaction.Behaviors>
             <TabControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid
@@ -66,19 +56,6 @@
                     <view:TCPView />
                 </TabItem.Content>
             </TabItem>
-
-            <!--<TabItem>
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Classes="TabFontIcon" Text="&#xf2fc;" />
-                        <TextBlock Classes="TabName" Text="{x:Static lang:Resources.About}" />
-                    </StackPanel>
-                </TabItem.Header>
-                <TabItem.Content>
-                    <view:AboutView />
-                </TabItem.Content>
-            </TabItem>-->
-
         </TabControl>
     </Grid>
 

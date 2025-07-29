@@ -6,9 +6,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
+	x:CompileBindings="True"
     mc:Ignorable="d">
-    <TextBlock
+	<StackPanel>
+		<TextBlock
         FontFamily="{StaticResource MaterialIcons}"
         FontSize="100"
         Text="&#xe157;" />
+		<TextBox Width="100"/>
+	</StackPanel>
+    
 </UserControl>

@@ -12,16 +12,12 @@
     Title="DebuggingTool"
     Width="315"
     Height="700"
+	x:CompileBindings="True"
     prism:ViewModelLocator.AutoWireViewModel="True"
     x:DataType="vm:MainViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
     <Grid>
-        <!--<ContentControl prism:RegionManager.RegionName="{x:Static region:RegionNames.CONTENT_REGION}" />
-        <Panel
-            x:Name="ToastContainer"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom" />-->
 		<views:MainView/>
     </Grid>
 </Window>

@@ -27,6 +27,7 @@ public class MainActivity : AvaloniaMainActivity<App>
             Window?.SetSoftInputMode(SoftInput.AdjustResize);
         }
         base.OnCreate(savedInstanceState);
+        Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
     }
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)

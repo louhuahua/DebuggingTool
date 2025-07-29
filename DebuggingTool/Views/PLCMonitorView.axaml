@@ -10,6 +10,7 @@
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
     prism:ViewModelLocator.AutoWireViewModel="True"
+    x:CompileBindings="True"
     x:DataType="vm:PLCMonitorViewModel"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -24,7 +25,8 @@
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
-                    <TextBlock Text="MonitorTab" />
+                    <TextBox Width="100" />
+                    <!--<TextBlock Text="MonitorTab" />-->
                 </TabItem.Content>
             </TabItem>
             <TabItem>
@@ -34,7 +36,12 @@
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
-                    <Button Content="open dialog" Height="60" Width="120" Command="{Binding OpenDialogCommand}" />
+                    <Button
+                        Width="120"
+						Height="40"
+						
+                        Command="{Binding DialogCommand}"
+                        Content="open dialog" />
                 </TabItem.Content>
             </TabItem>
         </TabControl>

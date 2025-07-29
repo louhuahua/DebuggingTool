@@ -20,7 +20,7 @@
                 Name="Snackbar"
                 Width="250"
                 VerticalAlignment="Top"
-                Background="#83cee0" />
+                Background="{StaticResource SukiPrimaryColor25}" />
         </Grid>
     </dialogs:ReactiveDialogHost>
 </UserControl>

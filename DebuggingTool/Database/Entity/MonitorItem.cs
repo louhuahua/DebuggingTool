@@ -45,4 +45,7 @@ public class MonitorItem
     /// Number of variables to read
     /// </summary>
     public int Count { get; set; }
+
+    [Ignore]
+    public string FullAddress => $"{StartByteAdr}.{BitAdr}";
 }

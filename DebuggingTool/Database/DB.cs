@@ -1,4 +1,5 @@
-﻿using DebuggingTool.Constants;
+﻿using AvaloniaDialogs.Views;
+using DebuggingTool.Constants;
 using DebuggingTool.Database.Entity;
 using SQLite;
 using System;
@@ -6,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DebuggingTool.Database;
 
-public class DbgToolDatabase
+public static class DB
 {
-    public SQLiteAsyncConnection Client { get; private set; }
+    public static SQLiteAsyncConnection Client { get; private set; }
 
-    public async Task InitAsync()
+    public static async Task InitAsync()
     {
         try
         {
@@ -51,7 +52,11 @@ public class DbgToolDatabase
         }
         catch (Exception ex)
         {
-            throw;
+            SingleActionDialog dialog = new()
+            {
+                Message = $"初始化数据库出错：{ex.Message}",
+                ButtonText = "关闭",
+            };
         }
         
     }

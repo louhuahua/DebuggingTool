@@ -12,9 +12,8 @@ using S7.Net;
 
 namespace DebuggingTool.ViewModels
 {
-    public class PLCMonitorViewModel : ReactiveObject
+    public class PLCConfigViewModel : ReactiveObject
     {
-        private DbgToolDatabase db;
         public ReactiveCommand<Unit, Unit> DialogCommand { get; set; }
         public ReactiveCommand<Unit, Unit> LoadedCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ReplaceCommand { get; set; }
@@ -31,13 +30,10 @@ namespace DebuggingTool.ViewModels
         [Reactive]
         public List<PLCConfig> Configs { get; set; }
 
-        [Reactive]
         public Array CpuTypes { get; } = Enum.GetValues(typeof(CpuType));
 
-        public PLCMonitorViewModel()
+        public PLCConfigViewModel()
         {
-            db = new DbgToolDatabase();
-
             //DialogCommand = ReactiveCommand.CreateFromTask(Initialize);
             LoadedCommand = ReactiveCommand.CreateFromTask(Initialize);
             ReplaceCommand = ReactiveCommand.Create(() =>
@@ -60,8 +56,8 @@ namespace DebuggingTool.ViewModels
                 try
                 {
                     EditingConfig.Id = Guid.NewGuid();
-                    await db.Client.InsertAsync(EditingConfig);
-                    Configs = await db.Client.Table<PLCConfig>().ToListAsync();
+                    await DB.Client.InsertAsync(EditingConfig);
+                    Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
                 }
                 catch (Exception ex)
                 {
@@ -75,7 +71,7 @@ namespace DebuggingTool.ViewModels
             {
                 try
                 {
-                    var existingConfig = await db.Client.FindAsync<PLCConfig>(EditingConfig.Id);
+                    var existingConfig = await DB.Client.FindAsync<PLCConfig>(EditingConfig.Id);
                     if (existingConfig == null)
                     {
                         MessageBus.Current.SendMessage(
@@ -83,8 +79,8 @@ namespace DebuggingTool.ViewModels
                         );
                         return Task.CompletedTask;
                     }
-                    await db.Client.UpdateAsync(EditingConfig);
-                    Configs = await db.Client.Table<PLCConfig>().ToListAsync();
+                    await DB.Client.UpdateAsync(EditingConfig);
+                    Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
                 }
                 catch (Exception ex)
                 {
@@ -99,8 +95,8 @@ namespace DebuggingTool.ViewModels
             {
                 try
                 {
-                    await db.Client.DeleteAsync(cfg);
-                    Configs = await db.Client.Table<PLCConfig>().ToListAsync();
+                    await DB.Client.DeleteAsync(cfg);
+                    Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
                 }
                 catch (Exception ex)
                 {
@@ -117,15 +113,13 @@ namespace DebuggingTool.ViewModels
             try
             {
                 EditingConfig = new PLCConfig { Id = default };
-                await db.InitAsync();
-
-                Configs = await db.Client.Table<PLCConfig>().ToListAsync();
+                Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
             }
             catch (Exception ex)
             {
                 SingleActionDialog dialog = new()
                 {
-                    Message = $"初始化数据库出错：{ex.Message}",
+                    Message = $"初始化PLC配置界面出错：{ex.Message}",
                     ButtonText = "关闭",
                 };
             }

@@ -1,7 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using DebuggingTool.Database;
 using ReactiveUI;
-using SukiUI.Dialogs;
-using SukiUI.Toasts;
 
 namespace DebuggingTool.ViewModels;
 
@@ -9,6 +7,6 @@ public partial class MainViewModel : ReactiveObject
 {
     public MainViewModel()
     {
-            
+            _ = DB.InitAsync();
     }
 }

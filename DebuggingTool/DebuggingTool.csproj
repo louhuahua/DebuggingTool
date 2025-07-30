@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>preview</LangVersion>
 	<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
@@ -20,7 +20,6 @@
   
   <ItemGroup>
     <ApplicationDefinition Include="Assets\avalonia-logo.svg" />
-    <ApplicationDefinition Include="Assets\Styles\AppStyles.axaml" />
     <ApplicationDefinition Include="Assets\Lang\Resources.Designer.cs" />
     <ApplicationDefinition Include="Assets\Lang\Resources.resx" />
   </ItemGroup>
@@ -53,24 +52,21 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <AvaloniaXaml Update="Assets\Colors\AppResources.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaXaml>
-    <AvaloniaXaml Update="Assets\Styles\AppStyles.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaXaml>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Assets\Lang\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\HomePageContainerView.axaml.cs">
+    <Compile Update="Views\Sys\HomePageContainerView.axaml.cs">
       <DependentUpon>HomePageContainerView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\PLCMonitorView.axaml.cs">
+    <Compile Update="Views\PLC\PLCConfigView.axaml.cs">
+      <DependentUpon>PLCConfigView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PLC\PLCView.axaml.cs">
+      <DependentUpon>PLCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PLC\PLCMonitorView.axaml.cs">
       <DependentUpon>PLCMonitorView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -80,11 +76,6 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Assets\Colors\" />
-	  <Folder Include="Events\" />
 	</ItemGroup>
 
 </Project>

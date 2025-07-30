@@ -6,7 +6,6 @@
     xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
     xmlns:ic="https://github.com/projektanker/icons.avalonia"
-    xmlns:lang="clr-namespace:DebuggingTool.Assets.Lang"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:view="clr-namespace:DebuggingTool.Views"

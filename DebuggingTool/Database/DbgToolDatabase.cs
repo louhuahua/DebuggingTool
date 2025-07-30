@@ -28,6 +28,7 @@ public class DbgToolDatabase
             {
                 var plcConfig = new PLCConfig
                 {
+                    Id = Guid.NewGuid(),
                     Name = "Default PLC"
                 };
                 var result = await Client.InsertAsync(plcConfig);

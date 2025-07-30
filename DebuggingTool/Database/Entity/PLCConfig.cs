@@ -9,7 +9,7 @@ namespace DebuggingTool.Database.Entity;
 public class PLCConfig : ReactiveObject
 {
     [PrimaryKey]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
 
     [Reactive]
     public string Name { get; set; }

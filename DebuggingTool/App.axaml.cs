@@ -74,8 +74,6 @@ public class App : PrismApplication
         else
             Application.Current.RequestedThemeVariant = ThemeVariant.Light;
 
-        string culture = PreferenceService.GetValue<string>(PreferencesKeys.CULTURE);
-        LanguageManager.ChangeLanguage(culture);
 
         var regionManager = Container.Resolve<IRegionManager>();
         RegionManager.SetRegionManager(MainWindow, regionManager);

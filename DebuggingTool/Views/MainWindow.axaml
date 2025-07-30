@@ -10,14 +10,14 @@
     xmlns:views="clr-namespace:DebuggingTool.Views"
     xmlns:vm="using:DebuggingTool.ViewModels"
     Title="DebuggingTool"
-    Width="315"
+    Width="350"
     Height="700"
-	x:CompileBindings="True"
     prism:ViewModelLocator.AutoWireViewModel="True"
+    x:CompileBindings="True"
     x:DataType="vm:MainViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
     <Grid>
-		<views:MainView/>
+        <views:MainView />
     </Grid>
 </Window>

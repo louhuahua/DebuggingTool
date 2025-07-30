@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />
+    <PackageReference Include="HotAvalonia" Version="3.0.0" PrivateAssets="All" Publish="True" />
   </ItemGroup>
 
   <ItemGroup>

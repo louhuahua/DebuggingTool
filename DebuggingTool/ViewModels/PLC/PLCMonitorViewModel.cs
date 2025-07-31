@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using AvaloniaDialogs.Views;
+﻿using AvaloniaDialogs.Views;
 using DebuggingTool.Database;
 using DebuggingTool.Database.Entity;
 using DebuggingTool.Model;
@@ -13,7 +7,12 @@ using DebuggingTool.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using S7.Net;
-using S7.Net.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace DebuggingTool.ViewModels
 {
@@ -70,12 +69,12 @@ namespace DebuggingTool.ViewModels
                 });
 
             this.WhenAnyValue(x => x.Monitoring)
-                .Subscribe(item =>
+                .Subscribe(async item =>
                 {
                     _vibrationService?.Vibrate();
                     if (item)
                     {
-                        pLCReliableService?.Start();
+                        await pLCReliableService?.Start();
                         MessageBus.Current.SendMessage(new SnackBarMessage("PLC监控已启动", 1));
                     }
                     else
@@ -101,20 +100,7 @@ namespace DebuggingTool.ViewModels
                 .Where(items => items != null)
                 .Subscribe(items =>
                 {
-                    pLCReliableService.Points = MonitorItems
-                        .Select(mi => new DataItem
-                        {
-                            DataType = mi.DataType,
-                            VarType = mi.VarType,
-                            DB = mi.DB,
-                            StartByteAdr = mi.StartByteAdr,
-                            BitAdr = mi.BitAdr,
-                            Count = mi.Count,
-                            Value = new object(),
-                        })
-                        .ToList();
-
-                    pLCReliableService.MonitorItems = MonitorItems;
+                    pLCReliableService.MonitorItems = items;
                 });
 
             LoadedCommand = ReactiveCommand.CreateFromTask(Initialize);
@@ -226,8 +212,6 @@ namespace DebuggingTool.ViewModels
                 if (!initialized)
                 {
                     pLCReliableService = new PLCReliableService(SelectedConfig);
-                    //pLCReliableService.DataReceived -= OnDataRecived;
-                    //pLCReliableService.DataReceived += OnDataRecived;
                     pLCReliableService.LogReceived -= OnLogRecived;
                     pLCReliableService.LogReceived += OnLogRecived;
                     pLCReliableService.ConnectionStatusChanged -= OnConnectionStatusChanged;
@@ -261,23 +245,6 @@ namespace DebuggingTool.ViewModels
                 );
             }
         }
-
-        //private void OnDataRecived(List<DataItem> dataItems)
-        //{
-        //    if (!Monitoring)
-        //        return;
-
-        //    foreach (var item in dataItems)
-        //    {
-        //        var mItem = MonitorItems.Single(mi =>
-        //            mi.VarType == item.VarType
-        //            && mi.StartByteAdr == item.StartByteAdr
-        //            && mi.BitAdr == item.BitAdr
-        //            && mi.Count == item.Count
-        //        );
-        //        mItem.Value = item.Value;
-        //    }
-        //}
 
         private void OnLogRecived(string msg)
         {

@@ -7,7 +7,6 @@ using System;
 
 namespace DebuggingTool.Database.Entity;
 
-//public class MonitorItem : DataItem
 public class MonitorItem:ReactiveObject
 {
     [PrimaryKey]

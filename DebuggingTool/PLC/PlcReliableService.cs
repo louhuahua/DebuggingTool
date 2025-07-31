@@ -17,7 +17,6 @@ public class PLCReliableService : IDisposable
     private readonly PLCConfig pLCConfig;
     private bool stopped;
 
-    public List<DataItem> Points { get; set; }
     public List<MonitorItem> MonitorItems { get; set; }
 
     public event Action<string> LogReceived;
@@ -29,11 +28,11 @@ public class PLCReliableService : IDisposable
         this.pLCConfig = pLCConfig;
     }
 
-    public void Start()
+    public async Task Start()
     {
         stopped = false;
 
-        Connect();
+        await Connect();
 
         _ = RunPeriodicTimerAsync(); // 丢弃返回的Task使其后台运行
     }
@@ -59,19 +58,19 @@ public class PLCReliableService : IDisposable
         }
     }
 
-    private void Connect()
+    private async Task Connect()
     {
         try
         {
             _plc?.Close();
             _plc = new Plc(pLCConfig.CpuType, pLCConfig.Ip, pLCConfig.Rack, pLCConfig.Slot);
-            _plc.Open();
+             await _plc.OpenAsync();
 
             if (_plc.IsConnected)
             {
                 Client?.Close();
                 Client = new Plc(pLCConfig.CpuType, pLCConfig.Ip, pLCConfig.Rack, pLCConfig.Slot);
-                Client.Open();
+                await Client.OpenAsync();
             }
 
             if (_plc.IsConnected)
@@ -104,10 +103,6 @@ public class PLCReliableService : IDisposable
                 await TryReconnect();
                 return;
             }
-
-            // 读DB块示例
-            //var result = await _plc.ReadMultipleVarsAsync(Points);
-            //DataReceived?.Invoke(result);
 
             await _plc.BatchRead(MonitorItems);
 

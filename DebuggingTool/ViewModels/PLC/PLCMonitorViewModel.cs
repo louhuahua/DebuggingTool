@@ -72,6 +72,7 @@ namespace DebuggingTool.ViewModels
             this.WhenAnyValue(x => x.Monitoring)
                 .Subscribe(item =>
                 {
+                    _vibrationService?.Vibrate();
                     if (item)
                     {
                         pLCReliableService?.Start();

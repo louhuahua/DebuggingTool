@@ -1,5 +1,7 @@
 ﻿using System;
 using Avalonia;
+using DebuggingTool.Services;
+using Prism.Ioc;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.MaterialDesign;
 
@@ -18,7 +20,20 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
     {
         IconProvider.Current.Register<MaterialDesignIconProvider>();
+        //var container = ContainerLocator.Current;
+        //container.RegisterSingleton<IVibrationService, DesktopVibrationService>();
 
-        return AppBuilder.Configure<App>().UsePlatformDetect().WithInterFont().LogToTrace();
+        //return AppBuilder.Configure<App>().UsePlatformDetect().WithInterFont().LogToTrace();
+        return AppBuilder
+            .Configure<App>()
+            .UsePlatformDetect()
+            .WithInterFont()
+            .LogToTrace()
+            .AfterSetup(builder =>
+            {
+                var container = ContainerLocator.Current;
+                container.RegisterSingleton<IVibrationService, DesktopVibrationService>();
+            });
+        ;
     }
 }

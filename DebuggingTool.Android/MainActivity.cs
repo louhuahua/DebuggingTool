@@ -4,6 +4,9 @@ using Android.OS;
 using Android.Views;
 using Avalonia;
 using Avalonia.Android;
+using DebuggingTool.Android.Services;
+using DebuggingTool.Services;
+using Prism.Ioc;
 using Projektanker.Icons.Avalonia;
 using Projektanker.Icons.Avalonia.MaterialDesign;
 
@@ -27,7 +30,9 @@ public class MainActivity : AvaloniaMainActivity<App>
             Window?.SetSoftInputMode(SoftInput.AdjustResize);
         }
         base.OnCreate(savedInstanceState);
-        Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
+        //Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
+        var container = ContainerLocator.Current;
+        container.RegisterSingleton<IVibrationService, AndroidVibrationService>();
     }
 
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)

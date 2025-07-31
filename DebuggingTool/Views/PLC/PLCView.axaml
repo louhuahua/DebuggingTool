@@ -14,10 +14,15 @@
     xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
     prism:ViewModelLocator.AutoWireViewModel="True"
     x:CompileBindings="True"
-    x:DataType="vm:PLCMonitorViewModel"
+    x:DataType="vm:PLCViewModel"
     mc:Ignorable="d">
     <ScrollViewer>
         <TabControl Classes="HorizontalTabs" TabStripPlacement="Left">
+            <i:Interaction.Behaviors>
+                <ia:EventTriggerBehavior EventName="SelectionChanged">
+                    <ia:InvokeCommandAction Command="{Binding ChangeTabCommand}" />
+                </ia:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
             <TabItem>
                 <TabItem.Header>
                     <StackPanel

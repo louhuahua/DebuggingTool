@@ -10,8 +10,8 @@
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
     prism:ViewModelLocator.AutoWireViewModel="True"
+    x:CompileBindings="True"
     x:DataType="vm:MainViewModel"
-	x:CompileBindings="True"
     mc:Ignorable="d">
     <dialogs:ReactiveDialogHost CloseOnClickAway="True">
         <Grid>
@@ -20,7 +20,8 @@
                 Name="Snackbar"
                 Width="250"
                 VerticalAlignment="Top"
-                Background="{StaticResource SukiPrimaryColor25}" />
+                Background="#bdd2fa"
+                FontSize="20" />
         </Grid>
     </dialogs:ReactiveDialogHost>
 </UserControl>

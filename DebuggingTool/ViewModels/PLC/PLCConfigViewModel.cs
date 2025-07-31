@@ -6,6 +6,7 @@ using AvaloniaDialogs.Views;
 using DebuggingTool.Database;
 using DebuggingTool.Database.Entity;
 using DebuggingTool.Model;
+using DebuggingTool.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using S7.Net;
@@ -14,6 +15,8 @@ namespace DebuggingTool.ViewModels
 {
     public class PLCConfigViewModel : ReactiveObject
     {
+        private readonly IVibrationService _vibrationService;
+
         public ReactiveCommand<Unit, Unit> DialogCommand { get; set; }
         public ReactiveCommand<Unit, Unit> LoadedCommand { get; set; }
         public ReactiveCommand<Unit, Unit> ReplaceCommand { get; set; }
@@ -32,12 +35,15 @@ namespace DebuggingTool.ViewModels
 
         public Array CpuTypes { get; } = Enum.GetValues(typeof(CpuType));
 
-        public PLCConfigViewModel()
+        public PLCConfigViewModel(IVibrationService vibrationService)
         {
+            _vibrationService = vibrationService;
+
             //DialogCommand = ReactiveCommand.CreateFromTask(Initialize);
             LoadedCommand = ReactiveCommand.CreateFromTask(Initialize);
             ReplaceCommand = ReactiveCommand.Create(() =>
             {
+                _vibrationService?.Vibrate();
                 EditingConfig = new PLCConfig
                 {
                     Id = SelectedConfig.Id,
@@ -55,9 +61,10 @@ namespace DebuggingTool.ViewModels
             {
                 try
                 {
+                    _vibrationService?.Vibrate();
                     EditingConfig.Id = Guid.NewGuid();
                     await DB.Client.InsertAsync(EditingConfig);
-                    Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
+                    await LoadConfigs();
                 }
                 catch (Exception ex)
                 {
@@ -71,6 +78,7 @@ namespace DebuggingTool.ViewModels
             {
                 try
                 {
+                    _vibrationService?.Vibrate();
                     var existingConfig = await DB.Client.FindAsync<PLCConfig>(EditingConfig.Id);
                     if (existingConfig == null)
                     {
@@ -80,7 +88,7 @@ namespace DebuggingTool.ViewModels
                         return Task.CompletedTask;
                     }
                     await DB.Client.UpdateAsync(EditingConfig);
-                    Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
+                    await LoadConfigs();
                 }
                 catch (Exception ex)
                 {
@@ -95,8 +103,9 @@ namespace DebuggingTool.ViewModels
             {
                 try
                 {
+                    _vibrationService?.Vibrate();
                     await DB.Client.DeleteAsync(cfg);
-                    Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
+                    await LoadConfigs();
                 }
                 catch (Exception ex)
                 {
@@ -113,7 +122,7 @@ namespace DebuggingTool.ViewModels
             try
             {
                 EditingConfig = new PLCConfig { Id = default };
-                Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
+                await LoadConfigs();
             }
             catch (Exception ex)
             {
@@ -123,15 +132,20 @@ namespace DebuggingTool.ViewModels
                     ButtonText = "关闭",
                 };
             }
-            //SingleActionDialog dialog = new()
-            //{
-            //    Message = "Hello from C# code! Do you want to see a snackbar?",
-            //    ButtonText = "Click me!",
-            //};
-            //if ((await dialog.ShowAsync()).HasValue)
-            //{
-            //    MessageBus.Current.SendMessage(new SnackBarMessage("hello ava", 3));
-            //}
+        }
+
+        private async Task LoadConfigs()
+        {
+            try
+            {
+                Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBus.Current.SendMessage(
+                    new SnackBarMessage($"加载PLC配置出错：{ex.Message}", 3)
+                );
+            }
         }
     }
 }

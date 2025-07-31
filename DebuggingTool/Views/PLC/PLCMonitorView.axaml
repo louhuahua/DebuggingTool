@@ -11,6 +11,7 @@
     xmlns:prism="http://prismlibrary.com/"
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
+    d:DesignHeight="450"
     prism:ViewModelLocator.AutoWireViewModel="True"
     x:CompileBindings="True"
     x:DataType="vm:PLCMonitorViewModel"
@@ -20,47 +21,153 @@
             <ia:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
-    <StackPanel Margin="0,10,20,0">
 
-        <ComboBox
-            Width="180"
-            Margin="-5,-5,0,0"
-            Padding="0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            DisplayMemberBinding="{Binding Name}"
-            ItemsSource="{Binding Configs}"
-            SelectedItem="{Binding SelectedConfig}" />
+    <Grid RowDefinitions="*,auto">
 
-        <Button
-            ic:Attached.Icon="mdi-plus-thick"
-            BorderThickness="0"
-            FontSize="25" />
+        <StackPanel
+            Grid.Row="0"
+            Height=""
+            Margin="0,10,20,0">
 
-        <ScrollViewer>
-            <DataGrid
-                x:Name="PLCMonitorGrid"
-                Margin="0,0,0,0"
+            <Panel>
+                <ComboBox
+                    Width="180"
+                    Margin="-5,-5,0,0"
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    DisplayMemberBinding="{Binding Name}"
+                    ItemsSource="{Binding Configs}"
+                    SelectedItem="{Binding SelectedConfig}" />
+
+                <Button
+                    Margin="0,-10,55,0"
+                    HorizontalAlignment="Right"
+                    ic:Attached.Icon="mdi-chevron-down"
+                    BorderThickness="0"
+                    Command="{Binding ExpandCommand}"
+                    FontSize="35"
+                    FontWeight="Bold" />
+                <ToggleButton
+                    x:Name="Switch"
+                    Margin="0,-10,0,0"
+                    HorizontalAlignment="Right"
+                    Classes="Switch"
+                    IsChecked="{Binding Monitoring}"
+                    ToolTip.Tip="Switch" />
+            </Panel>
+
+            <StackPanel
+                Margin="0,10"
                 HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                IsReadOnly="True"
-                ItemsSource="{Binding MonitorItems}"
-                SelectedItem="{Binding SelectedMonitorItem, Mode=OneWayToSource}">
-                <DataGrid.Styles>
-                    <Style Selector="DataGridRowGroupHeader">
-                        <Setter Property="IsItemCountVisible" Value="True" />
-                    </Style>
-                </DataGrid.Styles>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
-                    <DataGridTextColumn Binding="{Binding FullAddress}" Header="Address" />
-                    <DataGridTextColumn Binding="{Binding FullAddress}" Header="Value" />
-                </DataGrid.Columns>
+                IsVisible="{Binding Expanded}">
+                <Panel>
+                    <TextBox
+                        Width="120"
+                        HorizontalAlignment="Left"
+                        Text="{Binding EditingMonitorItem.Name}"
+                        Watermark="Name" />
 
-            </DataGrid>
+                    <ComboBox
+                        Width="120"
+                        Margin="0,-5,-5,0"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        ItemsSource="{Binding VarTypes}"
+                        SelectedItem="{Binding EditingMonitorItem.VarType}" />
+                </Panel>
 
-        </ScrollViewer>
+                <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
+                    <TextBox
+                        Width="80"
+                        HorizontalAlignment="Left"
+                        Text="{Binding EditingMonitorItem.StartByteAdr}"
+                        Watermark="StartByteAdr" />
+                    <TextBox
+                        Width="80"
+                        HorizontalAlignment="Center"
+                        Text="{Binding EditingMonitorItem.BitAdr}"
+                        Watermark="BitAdr" />
+                    <TextBox
+                        Width="80"
+                        HorizontalAlignment="Right"
+                        Text="{Binding EditingMonitorItem.Count}"
+                        Watermark="Count" />
+                </Panel>
+                <Panel Margin="0,20,0,0" HorizontalAlignment="Stretch">
+                    <Button
+                        Width="40"
+                        Margin="30,0,0,0"
+                        Padding="2"
+                        HorizontalAlignment="Left"
+                        ic:Attached.Icon="mdi-plus-thick"
+                        Classes="Flat Icon"
+                        Command="{Binding AddCommand}"
+                        FontSize="30" />
+                    <Button
+                        Width="40"
+                        Margin="0,0,0,0"
+                        Padding="2"
+                        HorizontalAlignment="Center"
+                        ic:Attached.Icon="mdi-content-save-edit"
+                        Classes="Flat Icon"
+                        Command="{Binding EditCommand}"
+                        FontSize="30" />
 
-    </StackPanel>
+                    <Button
+                        Width="40"
+                        Margin="0,0,30,0"
+                        Padding="2"
+                        HorizontalAlignment="Right"
+                        ic:Attached.Icon="mdi-delete-forever"
+                        BorderThickness="0"
+                        Command="{Binding RemoveCommand}"
+                        FontSize="40"
+                        Foreground="Orange" />
+                </Panel>
+            </StackPanel>
+
+            <ScrollViewer>
+                <DataGrid
+                    x:Name="PLCMonitorGrid"
+                    Margin="0,10,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    behaviors:DoubleClickBehavior.Command="{Binding ReplaceCommand}"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding MonitorItems}"
+                    SelectedItem="{Binding SelectedMonitorItem, Mode=OneWayToSource}">
+                    <DataGrid.Styles>
+                        <Style Selector="DataGridRowGroupHeader">
+                            <Setter Property="IsItemCountVisible" Value="True" />
+                        </Style>
+                    </DataGrid.Styles>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+                        <DataGridTextColumn Binding="{Binding FullAddress}" Header="Address" />
+                        <DataGridTextColumn Binding="{Binding Value}" Header="Value" />
+                    </DataGrid.Columns>
+
+                </DataGrid>
+
+            </ScrollViewer>
+
+
+        </StackPanel>
+
+        <ToggleButton
+            x:Name="LogSwitch"
+            Grid.Row="1"
+            Margin="0,-10,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Classes="Switch"
+            IsChecked="{Binding SendLog}"
+            ToolTip.Tip="Switch" />
+
+
+    </Grid>
+
+
 
 </UserControl>

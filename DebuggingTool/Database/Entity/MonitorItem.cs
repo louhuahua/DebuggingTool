@@ -1,4 +1,6 @@
-﻿using S7.Net;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using S7.Net;
 using S7.Net.Types;
 using SQLite;
 using System;
@@ -6,10 +8,10 @@ using System;
 namespace DebuggingTool.Database.Entity;
 
 //public class MonitorItem : DataItem
-public class MonitorItem
+public class MonitorItem:ReactiveObject
 {
     [PrimaryKey]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
 
     [Indexed]
     public Guid PLCConfigId { get; set; }
@@ -45,6 +47,10 @@ public class MonitorItem
     /// Number of variables to read
     /// </summary>
     public int Count { get; set; }
+
+    [Ignore]
+    [Reactive]
+    public object Value { get; set; }
 
     [Ignore]
     public string FullAddress => $"{StartByteAdr}.{BitAdr}";

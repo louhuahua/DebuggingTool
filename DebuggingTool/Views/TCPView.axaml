@@ -9,7 +9,7 @@
     x:CompileBindings="True"
     mc:Ignorable="d">
     <StackPanel>
-        <TextBlock FontSize="100" Text="TCPView" />
+        <TextBlock FontSize="75" Text="TCPView" />
     </StackPanel>
 
 </UserControl>

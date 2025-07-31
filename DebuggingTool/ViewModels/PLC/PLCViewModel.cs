@@ -1,21 +1,15 @@
-﻿using System.Reactive;
-using DebuggingTool.Database.Entity;
-using DebuggingTool.Services;
-using Prism.Regions;
+﻿using DebuggingTool.Services;
 using ReactiveUI;
+using System.Reactive;
 
 namespace DebuggingTool.ViewModels
 {
-    public class HomePageContainerViewModel : ViewModelBase
+    public class PLCViewModel : ReactiveObject
     {
         private readonly IVibrationService _vibrationService;
         public ReactiveCommand<Unit, Unit> ChangeTabCommand { get; set; }
 
-        public HomePageContainerViewModel(
-            IRegionManager regionManager,
-            IVibrationService vibrationService
-        )
-            : base(regionManager)
+        public PLCViewModel(IVibrationService vibrationService)
         {
             _vibrationService = vibrationService;
 

@@ -18,6 +18,11 @@
             x:Name="WaiterTab"
             Classes="Tabcontroller"
             TabStripPlacement="Bottom">
+            <i:Interaction.Behaviors>
+                <ia:EventTriggerBehavior EventName="SelectionChanged">
+                    <ia:InvokeCommandAction Command="{Binding ChangeTabCommand}" />
+                </ia:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
             <TabControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid

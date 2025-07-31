@@ -14,6 +14,7 @@ public class PLCReliableService : IDisposable
     public Plc Client { get; private set; }
     private readonly CancellationTokenSource _cts = new();
     private readonly PLCConfig pLCConfig;
+    private bool stopped;
 
     public List<DataItem> Points { get; set; }
 
@@ -28,6 +29,8 @@ public class PLCReliableService : IDisposable
 
     public void Start()
     {
+        stopped = false;
+
         Connect();
 
         _ = RunPeriodicTimerAsync(); // 丢弃返回的Task使其后台运行
@@ -91,6 +94,9 @@ public class PLCReliableService : IDisposable
     {
         try
         {
+            if (stopped)
+                return;
+
             if (_plc == null || !_plc.IsConnected)
             {
                 await TryReconnect();
@@ -104,7 +110,11 @@ public class PLCReliableService : IDisposable
         catch (Exception ex)
         {
             LogReceived?.Invoke($"PLC读取异常: {ex.Message}");
-            await TryReconnect();
+            if (_plc == null || !_plc.IsConnected)
+            {
+                await TryReconnect();
+                return;
+            }
         }
     }
 
@@ -128,6 +138,7 @@ public class PLCReliableService : IDisposable
 
     public void Stop()
     {
+        stopped = true;
         _plc?.Close();
         Client?.Close();
         LogReceived?.Invoke("PLC通讯已停止");

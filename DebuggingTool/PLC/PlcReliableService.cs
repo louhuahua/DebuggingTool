@@ -3,6 +3,7 @@ using S7.Net;
 using S7.Net.Types;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ public class PLCReliableService : IDisposable
     private bool stopped;
 
     public List<DataItem> Points { get; set; }
+    public List<MonitorItem> MonitorItems { get; set; }
 
     public event Action<string> LogReceived;
     public event Action<List<DataItem>> DataReceived;
@@ -104,8 +106,15 @@ public class PLCReliableService : IDisposable
             }
 
             // 读DB块示例
-            var result = await _plc.ReadMultipleVarsAsync(Points);
-            DataReceived?.Invoke(result);
+            //var result = await _plc.ReadMultipleVarsAsync(Points);
+            //DataReceived?.Invoke(result);
+
+            await _plc.BatchRead(MonitorItems);
+
+            foreach (var item in MonitorItems)
+            {
+                Debug.WriteLine($"读取到 {item.Name} 的值: {item.Value}");
+            }
         }
         catch (Exception ex)
         {

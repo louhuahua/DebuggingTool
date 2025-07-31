@@ -60,6 +60,15 @@ namespace DebuggingTool.ViewModels
         {
             _vibrationService = vibrationService;
 
+            this.WhenAnyValue(x => x.Expanded)
+                .Subscribe(item =>
+                {
+                    if (item)
+                    {
+                        Monitoring = false;
+                    }
+                });
+
             this.WhenAnyValue(x => x.Monitoring)
                 .Subscribe(item =>
                 {
@@ -100,22 +109,23 @@ namespace DebuggingTool.ViewModels
                             StartByteAdr = mi.StartByteAdr,
                             BitAdr = mi.BitAdr,
                             Count = mi.Count,
+                            Value = new object(),
                         })
                         .ToList();
+
+                    pLCReliableService.MonitorItems = MonitorItems;
                 });
 
             LoadedCommand = ReactiveCommand.CreateFromTask(Initialize);
             ExpandCommand = ReactiveCommand.Create(() =>
             {
                 Expanded = !Expanded;
-                if (Expanded)
-                    Monitoring = !Expanded;
-
                 _vibrationService?.Vibrate();
             });
             ReplaceCommand = ReactiveCommand.Create(() =>
             {
                 _vibrationService?.Vibrate();
+                Expanded = true;
                 EditingMonitorItem = new MonitorItem
                 {
                     Id = SelectedMonitorItem.Id,
@@ -203,19 +213,20 @@ namespace DebuggingTool.ViewModels
         {
             try
             {
+                Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
+
                 EditingMonitorItem = new MonitorItem
                 {
                     Id = default,
                     DataType = DataType.DataBlock,
                 };
-                Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
                 SelectedConfig = Configs.Count > 0 ? Configs[0] : null;
 
                 if (!initialized)
                 {
                     pLCReliableService = new PLCReliableService(SelectedConfig);
-                    pLCReliableService.DataReceived -= OnDataRecived;
-                    pLCReliableService.DataReceived += OnDataRecived;
+                    //pLCReliableService.DataReceived -= OnDataRecived;
+                    //pLCReliableService.DataReceived += OnDataRecived;
                     pLCReliableService.LogReceived -= OnLogRecived;
                     pLCReliableService.LogReceived += OnLogRecived;
                     pLCReliableService.ConnectionStatusChanged -= OnConnectionStatusChanged;
@@ -250,22 +261,22 @@ namespace DebuggingTool.ViewModels
             }
         }
 
-        private void OnDataRecived(List<DataItem> dataItems)
-        {
-            if (!Monitoring)
-                return;
+        //private void OnDataRecived(List<DataItem> dataItems)
+        //{
+        //    if (!Monitoring)
+        //        return;
 
-            foreach (var item in dataItems)
-            {
-                var mItem = MonitorItems.Single(mi =>
-                    mi.VarType == item.VarType
-                    && mi.StartByteAdr == item.StartByteAdr
-                    && mi.BitAdr == item.BitAdr
-                    && mi.Count == item.Count
-                );
-                mItem.Value = item.Value;
-            }
-        }
+        //    foreach (var item in dataItems)
+        //    {
+        //        var mItem = MonitorItems.Single(mi =>
+        //            mi.VarType == item.VarType
+        //            && mi.StartByteAdr == item.StartByteAdr
+        //            && mi.BitAdr == item.BitAdr
+        //            && mi.Count == item.Count
+        //        );
+        //        mItem.Value = item.Value;
+        //    }
+        //}
 
         private void OnLogRecived(string msg)
         {

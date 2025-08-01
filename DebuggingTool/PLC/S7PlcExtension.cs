@@ -170,7 +170,7 @@ public static class S7PlcExtension
     )
     {
         byte[] stringBytes = new byte[length];
-        Array.Copy(bytes, offset + 2, stringBytes, 0, length - 2);
+        Array.Copy(bytes, offset, stringBytes, 0, length);
 
         return encoding switch
         {
@@ -378,6 +378,112 @@ public static class S7PlcExtension
         }
 
         return (T)ExtractValueFromBytes(data, 0, length, bitAddress, targetType);
+    }
+
+    #endregion
+
+    #region PLC写入方法
+
+    /// <summary>
+    /// 根据MonitorItem配置向PLC写入字符串值
+    /// </summary>
+    public static async Task WriteValue(this Plc plc, MonitorItem monitorItem, string writeValue)
+    {
+        if (!plc.IsConnected)
+            throw new Exception("PLC未连接，无法写入");
+
+        if (string.IsNullOrWhiteSpace(writeValue))
+            throw new ArgumentException("写入值不能为空");
+
+        // 根据VarType转换WriteValue字符串为对应的数据类型
+        object convertedValue = ConvertWriteValue(monitorItem.VarType, writeValue);
+
+        // 验证转换后的值
+        if (!ValidateValue(monitorItem.VarType, convertedValue))
+            throw new ArgumentException("写入值格式不正确或超出范围");
+
+        // 执行PLC写入
+        await WriteToPLC(plc, monitorItem, convertedValue);
+    }
+
+    /// <summary>
+    /// 根据VarType转换WriteValue字符串为对应的数据类型
+    /// </summary>
+    private static object ConvertWriteValue(VarType varType, string writeValue)
+    {
+        return varType switch
+        {
+            VarType.Bit => Convert.ToBoolean(writeValue),
+            VarType.Byte => Convert.ToByte(writeValue),
+            VarType.Word => Convert.ToUInt16(writeValue),
+            VarType.DWord => Convert.ToUInt32(writeValue),
+            VarType.Int => Convert.ToInt16(writeValue),
+            VarType.DInt => Convert.ToInt32(writeValue),
+            VarType.Real => Convert.ToSingle(writeValue),
+            VarType.LReal => Convert.ToDouble(writeValue),
+            VarType.String => writeValue,
+            VarType.Timer => Convert.ToUInt16(writeValue),
+            VarType.Counter => Convert.ToUInt16(writeValue),
+            _ => throw new NotSupportedException($"不支持的VarType: {varType}"),
+        };
+    }
+
+    /// <summary>
+    /// 验证转换后的值是否合规
+    /// </summary>
+    private static bool ValidateValue(VarType varType, object value)
+    {
+        try
+        {
+            return varType switch
+            {
+                VarType.Bit => value is bool,
+                VarType.Byte => value is byte,
+                VarType.Word => value is ushort,
+                VarType.DWord => value is uint,
+                VarType.Int => value is short,
+                VarType.DInt => value is int,
+                VarType.Real => value is float,
+                VarType.LReal => value is double,
+                VarType.String => value is string str && str.Length <= 254, // S7字符串最大长度254
+                VarType.Timer => value is ushort,
+                VarType.Counter => value is ushort,
+                _ => false,
+            };
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 执行PLC写入操作
+    /// </summary>
+    private static async Task WriteToPLC(Plc plc, MonitorItem monitorItem, object value)
+    {
+        // 先进行显式类型转换
+        object convertedValue = monitorItem.VarType switch
+        {
+            VarType.Byte => (byte)value,
+            VarType.Word => (ushort)value,
+            VarType.DWord => (uint)value,
+            VarType.Int => (short)value,
+            VarType.DInt => (int)value,
+            VarType.Real => (float)value,
+            VarType.LReal => (double)value,
+            VarType.String => (string)value,
+            VarType.Timer or VarType.Counter => (ushort)value,
+            _ => throw new NotSupportedException($"不支持的VarType: {monitorItem.VarType}"),
+        };
+
+        // 执行PLC写入
+        await plc.WriteAsync(
+            monitorItem.DataType,
+            monitorItem.DB,
+            monitorItem.StartByteAdr,
+            convertedValue
+        );
     }
 }
 

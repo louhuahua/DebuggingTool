@@ -3,6 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:DebuggingTool.Behaviors"
+    xmlns:constans="clr-namespace:DebuggingTool.Constants"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
@@ -10,6 +11,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:vm="clr-namespace:DebuggingTool.ViewModels"
     d:DesignHeight="450"
     prism:ViewModelLocator.AutoWireViewModel="True"
@@ -21,14 +23,11 @@
             <ia:InvokeCommandAction Command="{Binding LoadedCommand}" />
         </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
-
     <Grid RowDefinitions="*,auto">
-
         <StackPanel
             Grid.Row="0"
             Height=""
             Margin="0,10,20,0">
-
             <Panel>
                 <ComboBox
                     Width="180"
@@ -39,7 +38,6 @@
                     DisplayMemberBinding="{Binding Name}"
                     ItemsSource="{Binding Configs}"
                     SelectedItem="{Binding SelectedConfig}" />
-
                 <Button
                     Margin="0,-10,55,0"
                     HorizontalAlignment="Right"
@@ -56,7 +54,6 @@
                     IsChecked="{Binding Monitoring}"
                     ToolTip.Tip="Switch" />
             </Panel>
-
             <StackPanel
                 Margin="0,10"
                 HorizontalAlignment="Stretch"
@@ -67,7 +64,6 @@
                         HorizontalAlignment="Left"
                         Text="{Binding EditingMonitorItem.Name}"
                         Watermark="Name" />
-
                     <ComboBox
                         Width="120"
                         Margin="0,-5,-5,0"
@@ -76,7 +72,6 @@
                         ItemsSource="{Binding VarTypes}"
                         SelectedItem="{Binding EditingMonitorItem.VarType}" />
                 </Panel>
-
                 <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
                     <TextBox
                         Width="80"
@@ -113,7 +108,6 @@
                         Classes="Flat Icon"
                         Command="{Binding EditCommand}"
                         FontSize="30" />
-
                     <Button
                         Width="40"
                         Margin="0,0,30,0"
@@ -126,7 +120,6 @@
                         Foreground="Orange" />
                 </Panel>
             </StackPanel>
-
             <ScrollViewer>
                 <DataGrid
                     x:Name="PLCMonitorGrid"
@@ -147,27 +140,61 @@
                         <DataGridTextColumn Binding="{Binding FullAddress}" Header="Address" />
                         <DataGridTextColumn Binding="{Binding Value}" Header="Value" />
                     </DataGrid.Columns>
-
                 </DataGrid>
-
             </ScrollViewer>
 
+            <TextBox
+                Width="200"
+                Margin="0,20,0,0"
+                Padding="0"
+                HorizontalAlignment="Center"
+                FontSize="22"
+                Text="{Binding WriteValue}" />
+
+            <Panel Margin="0,0,20,0">
+                <Button
+                    Width="50"
+                    Height="20"
+                    Margin="0,0,0,0"
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    Command="{Binding WriteCommand}"
+                    Content="Write" />
+                <Button
+                    Width="50"
+                    Height="20"
+                    Margin="60,0,0,0"
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    Command="{Binding WriteBitCommand}"
+                    CommandParameter="{x:Static constans:BooleanConstants.True}"
+                    Content="True" />
+                <Button
+                    Width="50"
+                    Height="20"
+                    Margin="120,0,0,0"
+                    Padding="0"
+                    HorizontalAlignment="Left"
+                    Command="{Binding WriteBitCommand}"
+                    CommandParameter="{x:Static constans:BooleanConstants.False}"
+                    Content="False" />
+                <ToggleButton
+                    x:Name="LogSwitch"
+                    Width="25"
+                    Height="15"
+                    Margin="0,0,0,0"
+                    Padding="0"
+                    HorizontalAlignment="Right"
+                    Content="Log"
+                    FontSize="10"
+                    IsChecked="{Binding SendLog}"
+                    ToolTip.Tip="Switch" />
+            </Panel>
 
         </StackPanel>
 
-        <ToggleButton
-            x:Name="LogSwitch"
-            Grid.Row="1"
-            Margin="0,-10,0,0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Classes="Switch"
-            IsChecked="{Binding SendLog}"
-            ToolTip.Tip="Switch" />
+        <!--<StackPanel Grid.Row="1" Margin="0,0,20,15">
 
-
+        </StackPanel>-->
     </Grid>
-
-
-
 </UserControl>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive;
-using System.Threading.Tasks;
-using AvaloniaDialogs.Views;
+﻿using AvaloniaDialogs.Views;
 using DebuggingTool.Database;
 using DebuggingTool.Database.Entity;
 using DebuggingTool.Model;
@@ -10,6 +6,11 @@ using DebuggingTool.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using S7.Net;
+using System;
+using System.Collections.Generic;
+using System.Reactive;
+using System.Threading.Tasks;
+using static ImTools.ImMap;
 
 namespace DebuggingTool.ViewModels
 {
@@ -105,6 +106,8 @@ namespace DebuggingTool.ViewModels
                 {
                     _vibrationService?.Vibrate();
                     await DB.Client.DeleteAsync(cfg);
+                    // 删除满足条件的所有记录
+                    await DB.Client.ExecuteAsync("DELETE FROM MonitorItem WHERE PLCConfigId = ?", cfg.Id);
                     await LoadConfigs();
                 }
                 catch (Exception ex)

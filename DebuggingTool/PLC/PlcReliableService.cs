@@ -20,7 +20,6 @@ public class PLCReliableService : IDisposable
     public List<MonitorItem> MonitorItems { get; set; }
 
     public event Action<string> LogReceived;
-    public event Action<List<DataItem>> DataReceived;
     public event Action<bool> ConnectionStatusChanged;
 
     public PLCReliableService(PLCConfig pLCConfig)

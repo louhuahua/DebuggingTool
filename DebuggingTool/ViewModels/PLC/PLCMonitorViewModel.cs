@@ -1,4 +1,10 @@
-﻿using AvaloniaDialogs.Views;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using AvaloniaDialogs.Views;
 using DebuggingTool.Database;
 using DebuggingTool.Database.Entity;
 using DebuggingTool.Model;
@@ -7,12 +13,6 @@ using DebuggingTool.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using S7.Net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace DebuggingTool.ViewModels
 {
@@ -28,6 +28,8 @@ namespace DebuggingTool.ViewModels
         public ReactiveCommand<Unit, Task> AddCommand { get; set; }
         public ReactiveCommand<Unit, Task> EditCommand { get; set; }
         public ReactiveCommand<Unit, Task> RemoveCommand { get; set; }
+        public ReactiveCommand<Unit, Task> WriteCommand { get; set; }
+        public ReactiveCommand<bool, Task> WriteBitCommand { get; set; }
 
         [Reactive]
         public List<PLCConfig> Configs { get; set; }
@@ -55,10 +57,14 @@ namespace DebuggingTool.ViewModels
         [Reactive]
         public bool SendLog { get; set; }
 
+        [Reactive]
+        public string WriteValue { get; set; }
+
         public PLCMonitorViewModel(IVibrationService vibrationService)
         {
             _vibrationService = vibrationService;
 
+            #region 监控属性
             this.WhenAnyValue(x => x.Expanded)
                 .Subscribe(item =>
                 {
@@ -102,7 +108,9 @@ namespace DebuggingTool.ViewModels
                 {
                     pLCReliableService.MonitorItems = items;
                 });
+            #endregion
 
+            #region 初始化命令
             LoadedCommand = ReactiveCommand.CreateFromTask(Initialize);
             ExpandCommand = ReactiveCommand.Create(() =>
             {
@@ -194,6 +202,110 @@ namespace DebuggingTool.ViewModels
                 }
                 return Task.CompletedTask;
             });
+
+            WriteCommand = ReactiveCommand.CreateFromTask<Unit, Task>(async _ =>
+            {
+                try
+                {
+                    if (SelectedMonitorItem == null)
+                    {
+                        MessageBus.Current.SendMessage(
+                            new SnackBarMessage($"请先选择要写入的监控项", 3)
+                        );
+                        return Task.CompletedTask;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(WriteValue))
+                    {
+                        MessageBus.Current.SendMessage(new SnackBarMessage($"请输入要写入的值", 3));
+                        return Task.CompletedTask;
+                    }
+
+                    if (
+                        pLCReliableService?.Client == null
+                        || !pLCReliableService.Client.IsConnected
+                    )
+                    {
+                        MessageBus.Current.SendMessage(
+                            new SnackBarMessage($"PLC未连接，无法写入", 3)
+                        );
+                        return Task.CompletedTask;
+                    }
+
+                    _vibrationService?.Vibrate();
+
+                    // 使用扩展方法执行PLC写入
+                    await pLCReliableService.Client.WriteValue(SelectedMonitorItem, WriteValue);
+
+                    MessageBus.Current.SendMessage(
+                        new SnackBarMessage($"成功写入值: {WriteValue}", 1)
+                    );
+                    //WriteValue = string.Empty; // 清空写入值
+                }
+                catch (Exception ex)
+                {
+                    MessageBus.Current.SendMessage(
+                        new SnackBarMessage($"PLC写入出错：{ex.Message}", 3)
+                    );
+                }
+                return Task.CompletedTask;
+            });
+
+            WriteBitCommand = ReactiveCommand.CreateFromTask<bool, Task>(async bitValue =>
+            {
+                try
+                {
+                    if (SelectedMonitorItem == null)
+                    {
+                        MessageBus.Current.SendMessage(
+                            new SnackBarMessage($"请先选择要写入的监控项", 3)
+                        );
+                        return Task.CompletedTask;
+                    }
+
+                    if (SelectedMonitorItem.VarType != VarType.Bit)
+                    {
+                        MessageBus.Current.SendMessage(
+                            new SnackBarMessage($"只能向Bit类型的监控项写入布尔值", 3)
+                        );
+                        return Task.CompletedTask;
+                    }
+
+                    if (
+                        pLCReliableService?.Client == null
+                        || !pLCReliableService.Client.IsConnected
+                    )
+                    {
+                        MessageBus.Current.SendMessage(
+                            new SnackBarMessage($"PLC未连接，无法写入", 3)
+                        );
+                        return Task.CompletedTask;
+                    }
+
+                    _vibrationService?.Vibrate();
+
+                    // 直接写入Bit值
+                    await pLCReliableService.Client.WriteBitAsync(
+                        SelectedMonitorItem.DataType,
+                        SelectedMonitorItem.DB,
+                        SelectedMonitorItem.StartByteAdr,
+                        SelectedMonitorItem.BitAdr,
+                        bitValue
+                    );
+
+                    MessageBus.Current.SendMessage(
+                        new SnackBarMessage($"成功写入Bit值: {bitValue}", 1)
+                    );
+                }
+                catch (Exception ex)
+                {
+                    MessageBus.Current.SendMessage(
+                        new SnackBarMessage($"PLC Bit写入出错：{ex.Message}", 3)
+                    );
+                }
+                return Task.CompletedTask;
+            });
+            #endregion
         }
 
         private async Task Initialize()
@@ -255,7 +367,11 @@ namespace DebuggingTool.ViewModels
 
         private void OnConnectionStatusChanged(bool status)
         {
+            if (!SendLog)
+                return;
             MessageBus.Current.SendMessage(new SnackBarMessage($"PLC连接：{status}", 1));
         }
+
+
     }
 }

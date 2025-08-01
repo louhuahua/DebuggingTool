@@ -30,7 +30,6 @@ public class MainActivity : AvaloniaMainActivity<App>
             Window?.SetSoftInputMode(SoftInput.AdjustResize);
         }
         base.OnCreate(savedInstanceState);
-        //Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
         var container = ContainerLocator.Current;
         container.RegisterSingleton<IVibrationService, AndroidVibrationService>();
     }

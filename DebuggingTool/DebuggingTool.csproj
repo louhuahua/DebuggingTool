@@ -32,7 +32,6 @@
 	<PackageReference Include="Avalonia.Svg" Version="11.3.0" />
 	<PackageReference Include="AvaloniaDialogs" Version="3.6.1" />
     <PackageReference Include="HotAvalonia" Version="3.0.0" PrivateAssets="All" Publish="True" />
-	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
 	<PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11073" />
 	<PackageReference Include="Projektanker.Icons.Avalonia.MaterialDesign" Version="9.6.2" />
 	<PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />

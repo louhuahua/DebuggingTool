@@ -39,7 +39,7 @@ public static class DB
                     var monitorItem = new MonitorItem
                     {
                         PLCConfigId = plcConfig.Id,
-                        Name = "Default Monitor Item",
+                        Name = "Default Item",
                         DataType = S7.Net.DataType.DataBlock,
                         StartByteAdr = 0,
                         BitAdr = 0,

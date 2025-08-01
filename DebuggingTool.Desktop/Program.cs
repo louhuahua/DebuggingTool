@@ -20,10 +20,6 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
     {
         IconProvider.Current.Register<MaterialDesignIconProvider>();
-        //var container = ContainerLocator.Current;
-        //container.RegisterSingleton<IVibrationService, DesktopVibrationService>();
-
-        //return AppBuilder.Configure<App>().UsePlatformDetect().WithInterFont().LogToTrace();
         return AppBuilder
             .Configure<App>()
             .UsePlatformDetect()

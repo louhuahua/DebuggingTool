@@ -207,6 +207,8 @@ namespace DebuggingTool.ViewModels
             {
                 try
                 {
+                    _vibrationService?.Vibrate();
+
                     if (SelectedMonitorItem == null)
                     {
                         MessageBus.Current.SendMessage(
@@ -232,8 +234,6 @@ namespace DebuggingTool.ViewModels
                         return Task.CompletedTask;
                     }
 
-                    _vibrationService?.Vibrate();
-
                     // 使用扩展方法执行PLC写入
                     await pLCReliableService.Client.WriteValue(SelectedMonitorItem, WriteValue);
 
@@ -255,6 +255,8 @@ namespace DebuggingTool.ViewModels
             {
                 try
                 {
+                    _vibrationService?.Vibrate();
+
                     if (SelectedMonitorItem == null)
                     {
                         MessageBus.Current.SendMessage(
@@ -281,8 +283,6 @@ namespace DebuggingTool.ViewModels
                         );
                         return Task.CompletedTask;
                     }
-
-                    _vibrationService?.Vibrate();
 
                     // 直接写入Bit值
                     await pLCReliableService.Client.WriteBitAsync(
@@ -371,7 +371,5 @@ namespace DebuggingTool.ViewModels
                 return;
             MessageBus.Current.SendMessage(new SnackBarMessage($"PLC连接：{status}", 1));
         }
-
-
     }
 }

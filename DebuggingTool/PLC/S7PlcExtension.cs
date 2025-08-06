@@ -172,9 +172,18 @@ public static class S7PlcExtension
         byte[] stringBytes = new byte[length];
         Array.Copy(bytes, offset, stringBytes, 0, length);
 
+        var len = stringBytes[0];
+        var maxLen = stringBytes[1];
+
+        byte[] valueBytes = new byte[length - 2];
+        Array.Copy(stringBytes, 2, valueBytes, 0, length - 2);
+
         return encoding switch
         {
-            StringEncoding.ASCII => Encoding.ASCII.GetString(stringBytes).TrimEnd('\0'),
+            //StringEncoding.ASCII => $"[{len}]"
+            //    + $"[{maxLen}]"
+            //    + Encoding.ASCII.GetString(valueBytes).TrimEnd('\0'),
+            StringEncoding.ASCII => Encoding.ASCII.GetString(valueBytes).TrimEnd('\0'),
             StringEncoding.UTF8 => Encoding.UTF8.GetString(stringBytes).TrimEnd('\0'),
             StringEncoding.Unicode => ConvertUnicodeString(stringBytes),
             _ => Encoding.ASCII.GetString(stringBytes).TrimEnd('\0'),
@@ -395,15 +404,53 @@ public static class S7PlcExtension
         if (string.IsNullOrWhiteSpace(writeValue))
             throw new ArgumentException("写入值不能为空");
 
-        // 根据VarType转换WriteValue字符串为对应的数据类型
-        object convertedValue = ConvertWriteValue(monitorItem.VarType, writeValue);
+        if (monitorItem.VarType == VarType.String)
+        {
+            var byteArr = Encoding.ASCII.GetBytes(writeValue);
+            var len = writeValue.Length;
+            var maxLen = monitorItem.Count;
 
-        // 验证转换后的值
-        if (!ValidateValue(monitorItem.VarType, convertedValue))
-            throw new ArgumentException("写入值格式不正确或超出范围");
+            if (len > maxLen)
+                throw new ArgumentException($"字符串长度 {len} 超过最大长度 {maxLen}");
 
-        // 执行PLC写入
-        await WriteToPLC(plc, monitorItem, convertedValue);
+            // 创建完整缓冲区 (长度 = maxLen)，自动初始化为全0
+            var bytes = new byte[maxLen];
+
+            bytes[0] = (byte)len; // 设置实际长度
+            bytes[1] = (byte)(maxLen - 2); // 设置最大长度
+
+            // 仅当有有效数据时才复制（避免空字符串时的异常）
+            if (len > 0)
+            {
+                Buffer.BlockCopy(
+                    src: byteArr,
+                    srcOffset: 0,
+                    dst: bytes,
+                    dstOffset: 2, // 目标数组从索引2开始
+                    count: len // 只复制有效长度的字节
+                );
+            }
+
+            // 注意：剩余空间已自动填充为0x00
+            await plc.WriteBytesAsync(
+                DataType.DataBlock,
+                monitorItem.DB,
+                monitorItem.StartByteAdr,
+                bytes
+            );
+        }
+        else
+        {
+            // 根据VarType转换WriteValue字符串为对应的数据类型
+            object convertedValue = ConvertWriteValue(monitorItem.VarType, writeValue);
+
+            // 验证转换后的值
+            if (!ValidateValue(monitorItem.VarType, convertedValue))
+                throw new ArgumentException("写入值格式不正确或超出范围");
+
+            // 执行PLC写入
+            await WriteToPLC(plc, monitorItem, convertedValue);
+        }
     }
 
     /// <summary>
@@ -472,7 +519,6 @@ public static class S7PlcExtension
             VarType.DInt => (int)value,
             VarType.Real => (float)value,
             VarType.LReal => (double)value,
-            VarType.String => (string)value,
             VarType.Timer or VarType.Counter => (ushort)value,
             _ => throw new NotSupportedException($"不支持的VarType: {monitorItem.VarType}"),
         };
@@ -485,6 +531,6 @@ public static class S7PlcExtension
             convertedValue
         );
     }
-}
 
     #endregion
+}

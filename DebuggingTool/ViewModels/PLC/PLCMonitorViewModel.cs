@@ -80,7 +80,7 @@ namespace DebuggingTool.ViewModels
                     _vibrationService?.Vibrate();
                     if (item)
                     {
-                        await pLCReliableService?.Start();
+                        await pLCReliableService?.Start(SelectedConfig);
                         MessageBus.Current.SendMessage(new SnackBarMessage("PLC监控已启动", 1));
                     }
                     else
@@ -97,8 +97,10 @@ namespace DebuggingTool.ViewModels
                         .Where(m => m.PLCConfigId == config.Id)
                         .ToListAsync()
                 )
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(items =>
                 {
+                    Monitoring = false;
                     MonitorItems = items;
                 });
 
@@ -323,7 +325,7 @@ namespace DebuggingTool.ViewModels
 
                 if (!initialized)
                 {
-                    pLCReliableService = new PLCReliableService(SelectedConfig);
+                    pLCReliableService = new PLCReliableService();
                     pLCReliableService.LogReceived -= OnLogRecived;
                     pLCReliableService.LogReceived += OnLogRecived;
                     pLCReliableService.ConnectionStatusChanged -= OnConnectionStatusChanged;

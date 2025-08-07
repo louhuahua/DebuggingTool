@@ -28,6 +28,12 @@ public class PLCConfig : ReactiveObject
     public CpuType CpuType { get; set; } = CpuType.S71200;
 
     /// <summary>
+    /// 端口
+    /// </summary>
+    [Reactive]
+    public int Port { get; set; } = 0;
+
+    /// <summary>
     /// PLC机架号
     /// </summary>
     [Reactive]

@@ -14,7 +14,7 @@ public class PLCReliableService : IDisposable
     private Plc _plc;
     public Plc Client { get; private set; }
     private readonly CancellationTokenSource _cts = new();
-    private readonly PLCConfig pLCConfig;
+    private PLCConfig pLCConfig;
     private bool stopped;
 
     public List<MonitorItem> MonitorItems { get; set; }
@@ -22,13 +22,10 @@ public class PLCReliableService : IDisposable
     public event Action<string> LogReceived;
     public event Action<bool> ConnectionStatusChanged;
 
-    public PLCReliableService(PLCConfig pLCConfig)
+    public async Task Start(PLCConfig pLCConfig)
     {
         this.pLCConfig = pLCConfig;
-    }
 
-    public async Task Start()
-    {
         stopped = false;
 
         await Connect();
@@ -62,13 +59,13 @@ public class PLCReliableService : IDisposable
         try
         {
             _plc?.Close();
-            _plc = new Plc(pLCConfig.CpuType, pLCConfig.Ip, pLCConfig.Rack, pLCConfig.Slot);
+            _plc = new Plc(pLCConfig.CpuType, pLCConfig.Ip, pLCConfig.Port,pLCConfig.Rack, pLCConfig.Slot);
              await _plc.OpenAsync();
 
             if (_plc.IsConnected)
             {
                 Client?.Close();
-                Client = new Plc(pLCConfig.CpuType, pLCConfig.Ip, pLCConfig.Rack, pLCConfig.Slot);
+                Client = new Plc(pLCConfig.CpuType, pLCConfig.Ip, pLCConfig.Port, pLCConfig.Rack, pLCConfig.Slot);
                 await Client.OpenAsync();
             }
 

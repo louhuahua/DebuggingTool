@@ -43,8 +43,16 @@
                 VerticalAlignment="Top"
                 ItemsSource="{Binding CpuTypes}"
                 SelectedItem="{Binding SelectedConfig.CpuType}" />
+
             <TextBox
-                Width="80"
+                Width="55"
+                Margin="0,0,65,0"
+                HorizontalAlignment="Right"
+                Text="{Binding EditingConfig.Port}"
+                Watermark="Port" />
+
+            <TextBox
+                Width="55"
                 Margin="0,0,0,0"
                 HorizontalAlignment="Right"
                 Text="{Binding EditingConfig.DBNumber}"

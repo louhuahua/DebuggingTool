@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DebuggingTool.Database.Entity;
+using S7.Net;
+using S7.Net.Types;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DebuggingTool.Database.Entity;
-using S7.Net;
 
 namespace DebuggingTool.PLC;
 
@@ -441,15 +442,20 @@ public static class S7PlcExtension
         }
         else
         {
-            // 根据VarType转换WriteValue字符串为对应的数据类型
             object convertedValue = ConvertWriteValue(monitorItem.VarType, writeValue);
 
-            // 验证转换后的值
-            if (!ValidateValue(monitorItem.VarType, convertedValue))
-                throw new ArgumentException("写入值格式不正确或超出范围");
+            var dataItem = new DataItem
+            {
+                DataType = DataType.DataBlock,
+                DB = monitorItem.DB,
+                StartByteAdr = monitorItem.StartByteAdr,
+                VarType = monitorItem.VarType,
+                BitAdr = monitorItem.BitAdr,
+                Count = monitorItem.Count,
+                Value = convertedValue,
+            };
 
-            // 执行PLC写入
-            await WriteToPLC(plc, monitorItem, convertedValue);
+            await plc.WriteAsync(new DataItem[1] { dataItem });
         }
     }
 
@@ -474,63 +480,5 @@ public static class S7PlcExtension
             _ => throw new NotSupportedException($"不支持的VarType: {varType}"),
         };
     }
-
-    /// <summary>
-    /// 验证转换后的值是否合规
-    /// </summary>
-    private static bool ValidateValue(VarType varType, object value)
-    {
-        try
-        {
-            return varType switch
-            {
-                VarType.Bit => value is bool,
-                VarType.Byte => value is byte,
-                VarType.Word => value is ushort,
-                VarType.DWord => value is uint,
-                VarType.Int => value is short,
-                VarType.DInt => value is int,
-                VarType.Real => value is float,
-                VarType.LReal => value is double,
-                VarType.String => value is string str && str.Length <= 254, // S7字符串最大长度254
-                VarType.Timer => value is ushort,
-                VarType.Counter => value is ushort,
-                _ => false,
-            };
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// 执行PLC写入操作
-    /// </summary>
-    private static async Task WriteToPLC(Plc plc, MonitorItem monitorItem, object value)
-    {
-        // 先进行显式类型转换
-        object convertedValue = monitorItem.VarType switch
-        {
-            VarType.Byte => (byte)value,
-            VarType.Word => (ushort)value,
-            VarType.DWord => (uint)value,
-            VarType.Int => (short)value,
-            VarType.DInt => (int)value,
-            VarType.Real => (float)value,
-            VarType.LReal => (double)value,
-            VarType.Timer or VarType.Counter => (ushort)value,
-            _ => throw new NotSupportedException($"不支持的VarType: {monitorItem.VarType}"),
-        };
-
-        // 执行PLC写入
-        await plc.WriteAsync(
-            monitorItem.DataType,
-            monitorItem.DB,
-            monitorItem.StartByteAdr,
-            convertedValue
-        );
-    }
-
     #endregion
 }

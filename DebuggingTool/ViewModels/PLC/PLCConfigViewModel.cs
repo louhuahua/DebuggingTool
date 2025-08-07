@@ -40,7 +40,6 @@ namespace DebuggingTool.ViewModels
         {
             _vibrationService = vibrationService;
 
-            //DialogCommand = ReactiveCommand.CreateFromTask(Initialize);
             LoadedCommand = ReactiveCommand.CreateFromTask(Initialize);
             ReplaceCommand = ReactiveCommand.Create(() =>
             {
@@ -51,6 +50,7 @@ namespace DebuggingTool.ViewModels
                     Name = SelectedConfig.Name,
                     Ip = SelectedConfig.Ip,
                     CpuType = SelectedConfig.CpuType,
+                    Port = SelectedConfig.Port,
                     Rack = SelectedConfig.Rack,
                     Slot = SelectedConfig.Slot,
                     DBNumber = SelectedConfig.DBNumber,

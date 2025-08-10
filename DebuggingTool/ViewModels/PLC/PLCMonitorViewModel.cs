@@ -219,7 +219,7 @@ namespace DebuggingTool.ViewModels
                         return Task.CompletedTask;
                     }
 
-                    if (string.IsNullOrWhiteSpace(WriteValue))
+                    if (string.IsNullOrEmpty(WriteValue))
                     {
                         MessageBus.Current.SendMessage(new SnackBarMessage($"请输入要写入的值", 3));
                         return Task.CompletedTask;

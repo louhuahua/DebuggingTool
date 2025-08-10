@@ -402,7 +402,7 @@ public static class S7PlcExtension
         if (!plc.IsConnected)
             throw new Exception("PLC未连接，无法写入");
 
-        if (string.IsNullOrWhiteSpace(writeValue))
+        if (string.IsNullOrEmpty(writeValue))
             throw new ArgumentException("写入值不能为空");
 
         if (monitorItem.VarType == VarType.String)

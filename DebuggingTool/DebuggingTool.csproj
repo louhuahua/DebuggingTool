@@ -17,6 +17,11 @@
     <AvaloniaResource Remove="Assets\Lang\Resources.ne-NP.resx" />
     <AvaloniaResource Remove="Assets\Lang\Resources.resx" />
   </ItemGroup>
+
+  
+  <ItemGroup>
+    <None Remove="Assets\app.ico" />
+  </ItemGroup>
   
   <ItemGroup>
     <ApplicationDefinition Include="Assets\avalonia-logo.svg" />

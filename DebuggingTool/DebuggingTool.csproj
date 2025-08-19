@@ -13,20 +13,11 @@
 
   
   <ItemGroup>
-    <AvaloniaResource Remove="Assets\Lang\Resources.en-US.resx" />
-    <AvaloniaResource Remove="Assets\Lang\Resources.ne-NP.resx" />
-    <AvaloniaResource Remove="Assets\Lang\Resources.resx" />
-  </ItemGroup>
-
-  
-  <ItemGroup>
     <None Remove="Assets\app.ico" />
   </ItemGroup>
   
   <ItemGroup>
     <ApplicationDefinition Include="Assets\avalonia-logo.svg" />
-    <ApplicationDefinition Include="Assets\Lang\Resources.Designer.cs" />
-    <ApplicationDefinition Include="Assets\Lang\Resources.resx" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -56,11 +47,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Assets\Lang\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Update="Views\Sys\HomePageContainerView.axaml.cs">
       <DependentUpon>HomePageContainerView.axaml</DependentUpon>
     </Compile>
@@ -75,11 +61,8 @@
     </Compile>
   </ItemGroup>
 
-	<ItemGroup>
-		<EmbeddedResource Update="Assets\Lang\Resources.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Lang\" />
+  </ItemGroup>
 
 </Project>

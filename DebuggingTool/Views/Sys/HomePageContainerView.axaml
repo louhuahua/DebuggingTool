@@ -27,7 +27,7 @@
                 <ItemsPanelTemplate>
                     <UniformGrid
                         Height="60"
-                        Columns="2"
+                        Columns="1"
                         Rows="1" />
                 </ItemsPanelTemplate>
             </TabControl.ItemsPanel>
@@ -46,7 +46,7 @@
                 </TabItem.Content>
             </TabItem>
 
-            <TabItem>
+            <!--<TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <ic:Icon FontSize="15" Value="mdi-ip-network" />
@@ -59,7 +59,7 @@
                 <TabItem.Content>
                     <view:TCPView />
                 </TabItem.Content>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
     </Grid>
 

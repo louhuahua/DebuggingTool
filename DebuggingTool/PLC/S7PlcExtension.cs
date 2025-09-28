@@ -130,13 +130,16 @@ public static class S7PlcExtension
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error processing point: {ex.Message}");
+                    throw new Exception(
+                        $"处理点位时出错 (起始地址: {getStartAddress(point)}, 长度: {getLength(point)}): {ex.Message}",
+                        ex
+                    );
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Batch read failed: {ex.Message}");
+            throw new Exception($"批量读取时出错: {ex.Message}", ex);
         }
     }
 

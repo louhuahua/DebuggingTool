@@ -170,6 +170,7 @@ namespace DebuggingTool.ViewModels
                         );
                         return Task.CompletedTask;
                     }
+                    EditingMonitorItem.DB = SelectedConfig.DBNumber;
                     await DB.Client.UpdateAsync(EditingMonitorItem);
                     await LoadMonitorItems();
                 }

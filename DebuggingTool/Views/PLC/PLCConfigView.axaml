@@ -31,7 +31,7 @@
             <TextBox
                 Width="120"
                 HorizontalAlignment="Right"
-                Text="{Binding EditingConfig.Ip}"
+                Text="{Binding EditingConfig.IP}"
                 Watermark="Ip" />
         </Panel>
         <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
@@ -45,18 +45,10 @@
                 SelectedItem="{Binding SelectedConfig.CpuType}" />
 
             <TextBox
-                Width="55"
-                Margin="0,0,65,0"
+                Width="120"
                 HorizontalAlignment="Right"
                 Text="{Binding EditingConfig.Port}"
                 Watermark="Port" />
-
-            <TextBox
-                Width="55"
-                Margin="0,0,0,0"
-                HorizontalAlignment="Right"
-                Text="{Binding EditingConfig.DBNumber}"
-                Watermark="DbBlock" />
         </Panel>
         <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
             <TextBox
@@ -114,7 +106,7 @@
                 </DataGrid.Styles>
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
-                    <DataGridTextColumn Binding="{Binding Ip}" Header="Address" />
+                    <DataGridTextColumn Binding="{Binding IP}" Header="Address" />
                     <DataGridTemplateColumn Header="Action">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

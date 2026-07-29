@@ -19,7 +19,7 @@ public class PLCConfig : ReactiveObject
     /// PLC IP地址
     /// </summary>
     [Reactive]
-    public string Ip { get; set; } = "127.0.0.1";
+    public string IP { get; set; } = "192.168.0.1";
 
     /// <summary>
     /// PLC CPU类型（s7netplus用）
@@ -31,7 +31,7 @@ public class PLCConfig : ReactiveObject
     /// 端口
     /// </summary>
     [Reactive]
-    public int Port { get; set; } = 0;
+    public int Port { get; set; } = 102;
 
     /// <summary>
     /// PLC机架号
@@ -55,5 +55,5 @@ public class PLCConfig : ReactiveObject
     /// 执行间隔
     /// </summary>
     [Reactive]
-    public int IntervalMs { get; set; } = 500;
+    public int IntervalMs { get; set; } = 100;
 }

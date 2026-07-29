@@ -10,6 +10,7 @@ using DebuggingTool.Database.Entity;
 using DebuggingTool.Model;
 using DebuggingTool.PLC;
 using DebuggingTool.Services;
+using DebuggingTool.Test;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using S7.Net;
@@ -19,7 +20,7 @@ namespace DebuggingTool.ViewModels
     public class PLCMonitorViewModel : ReactiveObject
     {
         private readonly IVibrationService _vibrationService;
-        private PLCReliableService pLCReliableService;
+        private S7Service1 s7Service;
         private bool initialized;
 
         public ReactiveCommand<Unit, Unit> LoadedCommand { get; set; }
@@ -80,12 +81,15 @@ namespace DebuggingTool.ViewModels
                     _vibrationService?.Vibrate();
                     if (item)
                     {
-                        await pLCReliableService?.Start(SelectedConfig);
+                        if (s7Service != null && SelectedConfig != null)
+                        {
+                            await s7Service.Start(SelectedConfig);
+                        }
                         MessageBus.Current.SendMessage(new SnackBarMessage("PLC监控已启动", 1));
                     }
                     else
                     {
-                        pLCReliableService?.Stop();
+                        s7Service?.Stop();
                         MessageBus.Current.SendMessage(new SnackBarMessage("PLC监控已停止", 1));
                     }
                 });
@@ -108,7 +112,10 @@ namespace DebuggingTool.ViewModels
                 .Where(items => items != null)
                 .Subscribe(items =>
                 {
-                    pLCReliableService.MonitorItems = items;
+                    if (s7Service != null)
+                    {
+                        s7Service.MonitorItems = items;
+                    }
                 });
             #endregion
 
@@ -141,9 +148,17 @@ namespace DebuggingTool.ViewModels
                 try
                 {
                     _vibrationService?.Vibrate();
+                    if (SelectedConfig == null)
+                    {
+                        MessageBus.Current.SendMessage(
+                            new SnackBarMessage($"请先选择PLC配置", 3)
+                        );
+                        return Task.CompletedTask;
+                    }
+
                     EditingMonitorItem.Id = Guid.NewGuid();
                     EditingMonitorItem.PLCConfigId = SelectedConfig.Id;
-                    EditingMonitorItem.DB = SelectedConfig.DBNumber;
+                    NormalizeEditingMonitorItem();
                     await DB.Client.InsertAsync(EditingMonitorItem);
                     await LoadMonitorItems();
                 }
@@ -160,6 +175,14 @@ namespace DebuggingTool.ViewModels
                 try
                 {
                     _vibrationService?.Vibrate();
+                    if (SelectedConfig == null)
+                    {
+                        MessageBus.Current.SendMessage(
+                            new SnackBarMessage($"请先选择PLC配置", 3)
+                        );
+                        return Task.CompletedTask;
+                    }
+
                     var existingItem = await DB.Client.FindAsync<MonitorItem>(
                         EditingMonitorItem.Id
                     );
@@ -170,7 +193,7 @@ namespace DebuggingTool.ViewModels
                         );
                         return Task.CompletedTask;
                     }
-                    EditingMonitorItem.DB = SelectedConfig.DBNumber;
+                    NormalizeEditingMonitorItem();
                     await DB.Client.UpdateAsync(EditingMonitorItem);
                     await LoadMonitorItems();
                 }
@@ -227,8 +250,8 @@ namespace DebuggingTool.ViewModels
                     }
 
                     if (
-                        pLCReliableService?.Client == null
-                        || !pLCReliableService.Client.IsConnected
+                        s7Service?.Client == null
+                        || !s7Service.Client.IsConnected
                     )
                     {
                         MessageBus.Current.SendMessage(
@@ -238,7 +261,7 @@ namespace DebuggingTool.ViewModels
                     }
 
                     // 使用扩展方法执行PLC写入
-                    await pLCReliableService.Client.WriteValue(SelectedMonitorItem, WriteValue);
+                    await s7Service.Client.WriteValue(SelectedMonitorItem, WriteValue);
 
                     MessageBus.Current.SendMessage(
                         new SnackBarMessage($"成功写入值: {WriteValue}", 1)
@@ -277,8 +300,8 @@ namespace DebuggingTool.ViewModels
                     }
 
                     if (
-                        pLCReliableService?.Client == null
-                        || !pLCReliableService.Client.IsConnected
+                        s7Service?.Client == null
+                        || !s7Service.Client.IsConnected
                     )
                     {
                         MessageBus.Current.SendMessage(
@@ -288,7 +311,7 @@ namespace DebuggingTool.ViewModels
                     }
 
                     // 直接写入Bit值
-                    await pLCReliableService.Client.WriteBitAsync(
+                    await s7Service.Client.WriteBitAsync(
                         SelectedMonitorItem.DataType,
                         SelectedMonitorItem.DB,
                         SelectedMonitorItem.StartByteAdr,
@@ -317,22 +340,28 @@ namespace DebuggingTool.ViewModels
             {
                 Configs = await DB.Client.Table<PLCConfig>().ToListAsync();
 
+                SelectedConfig = Configs.Count > 0 ? Configs[0] : null;
+
                 EditingMonitorItem = new MonitorItem
                 {
                     Id = default,
                     DataType = DataType.DataBlock,
+                    DB = SelectedConfig?.DBNumber ?? 1,
+                    PLCConfigId = SelectedConfig?.Id ?? default,
+                    Count = 1,
                 };
-                SelectedConfig = Configs.Count > 0 ? Configs[0] : null;
 
                 if (!initialized)
                 {
-                    pLCReliableService = new PLCReliableService();
-                    pLCReliableService.LogReceived -= OnLogRecived;
-                    pLCReliableService.LogReceived += OnLogRecived;
-                    pLCReliableService.ConnectionStatusChanged -= OnConnectionStatusChanged;
-                    pLCReliableService.ConnectionStatusChanged += OnConnectionStatusChanged;
+                    s7Service = new S7Service1();
+                    s7Service.LogReceived -= OnLogRecived;
+                    s7Service.LogReceived += OnLogRecived;
+                    s7Service.ConnectionStatusChanged -= OnConnectionStatusChanged;
+                    s7Service.ConnectionStatusChanged += OnConnectionStatusChanged;
                     initialized = true;
                 }
+
+                //await S7ServiceTest.TestCommunication();
             }
             catch (Exception ex)
             {
@@ -348,6 +377,12 @@ namespace DebuggingTool.ViewModels
         {
             try
             {
+                if (SelectedConfig == null)
+                {
+                    MonitorItems = new List<MonitorItem>();
+                    return;
+                }
+
                 MonitorItems = await DB
                     .Client.Table<MonitorItem>()
                     .Where(i => i.PLCConfigId == SelectedConfig.Id)
@@ -358,6 +393,21 @@ namespace DebuggingTool.ViewModels
                 MessageBus.Current.SendMessage(
                     new SnackBarMessage($"加载监控项配置出错：{ex.Message}", 3)
                 );
+            }
+        }
+
+        private void NormalizeEditingMonitorItem()
+        {
+            if (EditingMonitorItem == null)
+            {
+                return;
+            }
+
+            EditingMonitorItem.DataType = DataType.DataBlock;
+
+            if (EditingMonitorItem.DB == 0)
+            {
+                EditingMonitorItem.DB = SelectedConfig?.DBNumber ?? 1;
             }
         }
 

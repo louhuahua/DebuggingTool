@@ -60,7 +60,7 @@
                 IsVisible="{Binding Expanded}">
                 <Panel>
                     <TextBox
-                        Width="120"
+                        Width="80"
                         HorizontalAlignment="Left"
                         Text="{Binding EditingMonitorItem.Name}"
                         Watermark="Name" />
@@ -74,17 +74,24 @@
                 </Panel>
                 <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
                     <TextBox
-                        Width="80"
+                        Width="50"
                         HorizontalAlignment="Left"
+                        Text="{Binding EditingMonitorItem.DB}"
+                        Watermark="DB" />
+                    <TextBox
+                        Width="50"
+                        Margin="0,0,60,0"
+                        HorizontalAlignment="Center"
                         Text="{Binding EditingMonitorItem.StartByteAdr}"
                         Watermark="StartByteAdr" />
                     <TextBox
-                        Width="80"
+                        Width="50"
+                        Margin="60,0,0,0"
                         HorizontalAlignment="Center"
                         Text="{Binding EditingMonitorItem.BitAdr}"
                         Watermark="BitAdr" />
                     <TextBox
-                        Width="80"
+                        Width="50"
                         HorizontalAlignment="Right"
                         Text="{Binding EditingMonitorItem.Count}"
                         Watermark="Count" />

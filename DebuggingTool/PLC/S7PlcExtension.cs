@@ -1,4 +1,5 @@
-﻿using DebuggingTool.Database.Entity;
+using DebuggingTool.Database.Entity;
+using DebuggingTool.PLC;
 using S7.Net;
 using S7.Net.Types;
 using System;
@@ -19,12 +20,14 @@ public enum StringEncoding
 public static class S7PlcExtension
 {
     #region 批量读取核心方法
-
-    public static async Task BatchRead(this Plc plc, int dbNumber, List<PointBase> points)
+    public static Task BatchRead(this Plc plc, List<PointBase> points)
     {
-        await BatchReadInternal(
+        return BatchReadInternal(
             plc,
             points,
+            p => p.MemoryArea,
+            p => p.DB,
+            p => p.DB,
             p => p.StartAddress,
             p => p.Length,
             p => p.BitAddress,
@@ -34,37 +37,42 @@ public static class S7PlcExtension
         );
     }
 
-    public static async Task BatchRead(this Plc plc, List<MonitorItem> points)
+    public static Task BatchRead(this Plc plc, List<MonitorItem> points)
     {
-        if (points == null || points.Count == 0)
-            return;
-
-        await BatchReadInternal(
+        return BatchReadInternal(
             plc,
             points,
+            p => p.DataType,
+            p => p.DB,
+            p => p.DB,
             p => p.StartByteAdr,
             p => p.Count,
             p => p.BitAdr,
             p => GetTypeFromVarType(p.VarType),
-            p => StringEncoding.ASCII,
-            (p, v) => p.Value = v,
-            points[0].DB
+            _ => StringEncoding.ASCII,
+            (p, v) => p.Value = v
         );
     }
 
     private static async Task BatchReadInternal<T>(
-        this Plc plc,
+        Plc plc,
         IEnumerable<T> points,
+        Func<T, DataType> getMemoryArea,
+        Func<T, int> getConfiguredDb,
+        Func<T, int> getFallbackDb,
         Func<T, int> getStartAddress,
-        Func<T, int> getLength,
+        Func<T, int> getByteLength,
         Func<T, int> getBitAddress,
         Func<T, Type> getDataType,
         Func<T, StringEncoding> getEncoding,
-        Action<T, object> setValue,
-        int? fixedDbNumber = null
+        Action<T, object> setValue
     )
     {
-        if (points == null || !points.Any())
+        if (points == null)
+            return;
+
+        var pointList = points.ToList();
+        if (pointList.Count == 0)
             return;
 
         try
@@ -72,68 +80,74 @@ public static class S7PlcExtension
             if (!plc.IsConnected)
                 return;
 
-            // 计算读取范围
-            int minAddress = points.Min(getStartAddress);
-            int maxAddress = points.Max(p => getStartAddress(p) + getLength(p));
-            int totalBytes = maxAddress - minAddress;
-
-            // 确定DB块号
-            int dbNumber =
-                fixedDbNumber
-                ?? throw new ArgumentNullException(
-                    nameof(fixedDbNumber),
-                    "当使用MonitorItem时需要指定DB块号"
-                );
-
-            // 批量读取
-            byte[] dbData = await plc.ReadBytesAsync(
-                DataType.DataBlock,
-                dbNumber,
-                minAddress,
-                totalBytes
-            );
-
-            if (dbData == null || dbData.Length < totalBytes)
-            {
-                throw new Exception(
-                    $"读取数据失败，预期{totalBytes}字节，实际{dbData?.Length ?? 0}字节"
-                );
-            }
-
-            // 处理每个点位
-            foreach (var point in points)
-            {
-                try
+            var readTargets = pointList
+                .Select(point =>
                 {
-                    int offset = getStartAddress(point) - minAddress;
-                    int length = getLength(point);
-                    object value;
+                    var memoryArea = getMemoryArea(point);
+                    var db = ResolveDb(memoryArea, getConfiguredDb(point), getFallbackDb(point));
+                    var startAddress = getStartAddress(point);
+                    var byteLength = getByteLength(point);
 
-                    // 根据不同类型选择提取方法
-                    var dataType = getDataType(point);
-                    if (dataType == typeof(string))
+                    if (byteLength <= 0)
                     {
-                        value = ExtractStringValue(dbData, offset, length, getEncoding(point));
-                    }
-                    else
-                    {
-                        value = ExtractValueFromBytes(
-                            dbData,
-                            offset,
-                            length,
-                            getBitAddress(point),
-                            dataType
+                        throw new ArgumentOutOfRangeException(
+                            nameof(byteLength),
+                            $"点位 {startAddress} 的读取长度必须大于 0"
                         );
                     }
 
-                    setValue(point, value);
-                }
-                catch (Exception ex)
+                    return new ReadTarget<T>(
+                        Point: point,
+                        MemoryArea: memoryArea,
+                        Db: db,
+                        StartAddress: startAddress,
+                        ByteLength: byteLength,
+                        BitAddress: getBitAddress(point),
+                        TargetType: getDataType(point),
+                        Encoding: getEncoding(point)
+                    );
+                })
+                .ToList();
+
+            foreach (var group in readTargets.GroupBy(x => new ReadGroupKey(x.MemoryArea, x.Db)))
+            {
+                int minAddress = group.Min(x => x.StartAddress);
+                int maxAddress = group.Max(x => x.StartAddress + x.ByteLength);
+                int totalBytes = maxAddress - minAddress;
+
+                if (totalBytes <= 0)
+                    continue;
+
+                byte[] dbData = await plc.ReadBytesAsync(
+                        group.Key.MemoryArea,
+                        group.Key.Db,
+                        minAddress,
+                        totalBytes
+                    )
+                    .ConfigureAwait(false);
+
+                if (dbData == null || dbData.Length < totalBytes)
                 {
                     throw new Exception(
-                        $"处理点位时出错 (起始地址: {getStartAddress(point)}, 长度: {getLength(point)}): {ex.Message}",
-                        ex
+                        $"读取 {group.Key.MemoryArea}#{group.Key.Db} 失败，预期 {totalBytes} 字节，实际 {dbData?.Length ?? 0} 字节"
                     );
+                }
+
+                foreach (var target in group)
+                {
+                    int offset = target.StartAddress - minAddress;
+                    object value =
+                        target.TargetType == typeof(string)
+                            ? ExtractStringValue(dbData, offset, target.ByteLength, target.Encoding)
+                            : ExtractValueFromBytes(
+                                dbData,
+                                offset,
+                                target.ByteLength,
+                                target.BitAddress,
+                                target.TargetType
+                            );
+
+                    setValue(target.Point, value);
                 }
             }
         }
@@ -142,6 +156,29 @@ public static class S7PlcExtension
             throw new Exception($"批量读取时出错: {ex.Message}", ex);
         }
     }
+
+    private static int ResolveDb(DataType memoryArea, int configuredDb, int fallbackDb)
+    {
+        if (memoryArea == DataType.DataBlock)
+        {
+            return configuredDb != 0 ? configuredDb : fallbackDb;
+        }
+
+        return 0;
+    }
+
+    private readonly record struct ReadGroupKey(DataType MemoryArea, int Db);
+
+    private sealed record ReadTarget<T>(
+        T Point,
+        DataType MemoryArea,
+        int Db,
+        int StartAddress,
+        int ByteLength,
+        int BitAddress,
+        Type TargetType,
+        StringEncoding Encoding
+    );
 
     #endregion
 
@@ -173,40 +210,40 @@ public static class S7PlcExtension
         StringEncoding encoding
     )
     {
+        if (length < 2)
+            throw new ArgumentException("字符串读取长度必须至少包含 2 个字节");
+
         byte[] stringBytes = new byte[length];
         Array.Copy(bytes, offset, stringBytes, 0, length);
-
-        var len = stringBytes[0];
-        var maxLen = stringBytes[1];
 
         byte[] valueBytes = new byte[length - 2];
         Array.Copy(stringBytes, 2, valueBytes, 0, length - 2);
 
         return encoding switch
         {
-            //StringEncoding.ASCII => $"[{len}]"
-            //    + $"[{maxLen}]"
-            //    + Encoding.ASCII.GetString(valueBytes).TrimEnd('\0'),
             StringEncoding.ASCII => Encoding.ASCII.GetString(valueBytes).TrimEnd('\0'),
-            StringEncoding.UTF8 => Encoding.UTF8.GetString(stringBytes).TrimEnd('\0'),
-            StringEncoding.Unicode => ConvertUnicodeString(stringBytes),
-            _ => Encoding.ASCII.GetString(stringBytes).TrimEnd('\0'),
+            StringEncoding.UTF8 => Encoding.UTF8.GetString(valueBytes).TrimEnd('\0'),
+            StringEncoding.Unicode => ConvertUnicodeString(valueBytes),
+            _ => Encoding.ASCII.GetString(valueBytes).TrimEnd('\0'),
         };
     }
 
     private static string ConvertUnicodeString(byte[] bytes)
     {
+        var buffer = bytes.ToArray();
+
         if (BitConverter.IsLittleEndian)
         {
-            for (int i = 0; i < bytes.Length; i += 2)
+            for (int i = 0; i < buffer.Length; i += 2)
             {
-                if (i + 1 < bytes.Length)
+                if (i + 1 < buffer.Length)
                 {
-                    (bytes[i], bytes[i + 1]) = (bytes[i + 1], bytes[i]);
+                    (buffer[i], buffer[i + 1]) = (buffer[i + 1], buffer[i]);
                 }
             }
         }
-        return Encoding.Unicode.GetString(bytes).TrimEnd('\0');
+
+        return Encoding.Unicode.GetString(buffer).TrimEnd('\0');
     }
 
     #endregion
@@ -279,14 +316,18 @@ public static class S7PlcExtension
 
         int minLength = GetMinBytesRequired(targetType);
         if (length < minLength)
+        {
             throw new ArgumentException(
                 $"{targetType.Name}需要至少{minLength}字节，但指定了{length}字节"
             );
+        }
 
         if (offset + length > bytes.Length)
+        {
             throw new ArgumentOutOfRangeException(
                 $"数据范围越界：偏移量{offset}，长度{length}，总长度{bytes.Length}"
             );
+        }
     }
 
     private static void ValidateBitAddress(int bitAddress)
@@ -311,7 +352,7 @@ public static class S7PlcExtension
             Type t when t == typeof(float) => 4,
             Type t when t == typeof(double) => 8,
             Type t when t == typeof(byte[]) => 1,
-            Type t when t == typeof(string) => 1,
+            Type t when t == typeof(string) => 2,
             _ => 1,
         };
     }
@@ -337,11 +378,12 @@ public static class S7PlcExtension
             throw new Exception("PLC未连接，无法读取");
 
         var dataBytes = await plc.ReadBytesAsync(
-            DataType.DataBlock,
-            dbNum,
-            startAddress,
-            maxStringLength
-        );
+                DataType.DataBlock,
+                dbNum,
+                startAddress,
+                maxStringLength
+            )
+            .ConfigureAwait(false);
         int currentLength = dataBytes[1];
 
         if (currentLength > maxStringLength)
@@ -364,8 +406,7 @@ public static class S7PlcExtension
         int dbNum,
         int startAddress,
         int length,
-        int bitAddress = 0,
-        StringEncoding encoding = StringEncoding.ASCII
+        int bitAddress = 0
     )
         where T : struct
     {
@@ -376,19 +417,17 @@ public static class S7PlcExtension
         int minBytesRequired = GetMinBytesRequired(targetType);
 
         if (length < minBytesRequired)
+        {
             throw new ArgumentException(
                 $"{targetType.Name}需要至少{minBytesRequired}字节，但指定了{length}字节"
             );
+        }
 
-        byte[] data = await plc.ReadBytesAsync(DataType.DataBlock, dbNum, startAddress, length);
+        byte[] data = await plc.ReadBytesAsync(DataType.DataBlock, dbNum, startAddress, length)
+            .ConfigureAwait(false);
 
         if (data == null || data.Length < length)
             throw new Exception($"读取数据失败，预期{length}字节，实际{data?.Length ?? 0}字节");
-
-        if (targetType == typeof(string))
-        {
-            return (T)(object)ExtractStringValue(data, 0, length, encoding);
-        }
 
         return (T)ExtractValueFromBytes(data, 0, length, bitAddress, targetType);
     }
@@ -413,44 +452,32 @@ public static class S7PlcExtension
             var byteArr = Encoding.ASCII.GetBytes(writeValue);
             var len = writeValue.Length;
             var maxLen = monitorItem.Count;
+            var db = ResolveDb(monitorItem.DataType, monitorItem.DB, monitorItem.DB);
 
             if (len > maxLen)
                 throw new ArgumentException($"字符串长度 {len} 超过最大长度 {maxLen}");
 
-            // 创建完整缓冲区 (长度 = maxLen)，自动初始化为全0
             var bytes = new byte[maxLen];
+            bytes[0] = (byte)len;
+            bytes[1] = (byte)(maxLen - 2);
 
-            bytes[0] = (byte)len; // 设置实际长度
-            bytes[1] = (byte)(maxLen - 2); // 设置最大长度
-
-            // 仅当有有效数据时才复制（避免空字符串时的异常）
             if (len > 0)
             {
-                Buffer.BlockCopy(
-                    src: byteArr,
-                    srcOffset: 0,
-                    dst: bytes,
-                    dstOffset: 2, // 目标数组从索引2开始
-                    count: len // 只复制有效长度的字节
-                );
+                Buffer.BlockCopy(src: byteArr, srcOffset: 0, dst: bytes, dstOffset: 2, count: len);
             }
 
-            // 注意：剩余空间已自动填充为0x00
-            await plc.WriteBytesAsync(
-                DataType.DataBlock,
-                monitorItem.DB,
-                monitorItem.StartByteAdr,
-                bytes
-            );
+            await plc.WriteBytesAsync(monitorItem.DataType, db, monitorItem.StartByteAdr, bytes)
+                .ConfigureAwait(false);
         }
         else
         {
             object convertedValue = ConvertWriteValue(monitorItem.VarType, writeValue);
+            var db = ResolveDb(monitorItem.DataType, monitorItem.DB, monitorItem.DB);
 
             var dataItem = new DataItem
             {
-                DataType = DataType.DataBlock,
-                DB = monitorItem.DB,
+                DataType = monitorItem.DataType,
+                DB = db,
                 StartByteAdr = monitorItem.StartByteAdr,
                 VarType = monitorItem.VarType,
                 BitAdr = monitorItem.BitAdr,
@@ -458,7 +485,7 @@ public static class S7PlcExtension
                 Value = convertedValue,
             };
 
-            await plc.WriteAsync(new DataItem[1] { dataItem });
+            await plc.WriteAsync(new DataItem[1] { dataItem }).ConfigureAwait(false);
         }
     }
 
@@ -483,5 +510,89 @@ public static class S7PlcExtension
             _ => throw new NotSupportedException($"不支持的VarType: {varType}"),
         };
     }
+
+    public static async Task WriteValue<T>(
+        this Plc plc,
+        int db,
+        int startAddress,
+        int length,
+        byte bitAddress,
+        T t
+    )
+    {
+        if (!plc.IsConnected)
+            throw new Exception("PLC未连接，无法写入");
+
+        if (t is null)
+            throw new ArgumentException("写入值不能为空");
+
+        var varType = GetVarType<T>();
+
+        if (varType == VarType.String)
+        {
+            string writeValue = t as string;
+            var byteArr = Encoding.ASCII.GetBytes(writeValue);
+            var len = writeValue.Length;
+            var maxLen = length;
+
+            if (len > maxLen)
+                throw new ArgumentException($"字符串长度 {len} 超过最大长度 {maxLen}");
+
+            // 创建完整缓冲区 (长度 = maxLen)，自动初始化为全0
+            var bytes = new byte[maxLen];
+
+            bytes[0] = (byte)len; // 设置实际长度
+            bytes[1] = (byte)(maxLen - 2); // 设置最大长度
+
+            // 仅当有有效数据时才复制（避免空字符串时的异常）
+            if (len > 0)
+            {
+                Buffer.BlockCopy(
+                    src: byteArr,
+                    srcOffset: 0,
+                    dst: bytes,
+                    dstOffset: 2, // 目标数组从索引2开始
+                    count: len // 只复制有效长度的字节
+                );
+            }
+
+            // 注意：剩余空间已自动填充为0x00
+            await plc.WriteBytesAsync(DataType.DataBlock, db, startAddress, bytes)
+                .ConfigureAwait(false);
+        }
+        else
+        {
+            var dataItem = new DataItem
+            {
+                DataType = DataType.DataBlock,
+                DB = db,
+                StartByteAdr = startAddress,
+                VarType = varType,
+                BitAdr = bitAddress,
+                Count = length,
+                Value = t,
+            };
+
+            await plc.WriteAsync(new DataItem[1] { dataItem }).ConfigureAwait(false);
+        }
+    }
+
+    public static VarType GetVarType<T>()
+    {
+        return typeof(T) switch
+        {
+            var t when t == typeof(bool) => VarType.Bit,
+            var t when t == typeof(byte) => VarType.Byte,
+            var t when t == typeof(short) => VarType.Int,
+            var t when t == typeof(ushort) => VarType.Word,
+            var t when t == typeof(int) => VarType.DInt,
+            var t when t == typeof(uint) => VarType.DWord,
+            var t when t == typeof(float) => VarType.Real,
+            var t when t == typeof(double) => VarType.LReal, // 如果扩展了 LReal
+            var t when t == typeof(string) => VarType.String,
+            _ => throw new NotSupportedException($"不支持的类型: {typeof(T).Name}"),
+        };
+    }
+
     #endregion
 }

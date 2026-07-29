@@ -48,7 +48,7 @@ namespace DebuggingTool.ViewModels
                 {
                     Id = SelectedConfig.Id,
                     Name = SelectedConfig.Name,
-                    Ip = SelectedConfig.Ip,
+                    IP = SelectedConfig.IP,
                     CpuType = SelectedConfig.CpuType,
                     Port = SelectedConfig.Port,
                     Rack = SelectedConfig.Rack,

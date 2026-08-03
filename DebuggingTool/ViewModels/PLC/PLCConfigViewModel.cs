@@ -4,7 +4,8 @@ using DebuggingTool.Database.Entity;
 using DebuggingTool.Model;
 using DebuggingTool.Services;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using ReactiveUI.SourceGenerators;
 using S7.Net;
 using System;
 using System.Collections.Generic;
@@ -14,25 +15,25 @@ using static ImTools.ImMap;
 
 namespace DebuggingTool.ViewModels
 {
-    public class PLCConfigViewModel : ReactiveObject
+    public partial class PLCConfigViewModel : ReactiveObject
     {
         private readonly IVibrationService _vibrationService;
 
-        public ReactiveCommand<Unit, Unit> DialogCommand { get; set; }
-        public ReactiveCommand<Unit, Unit> LoadedCommand { get; set; }
-        public ReactiveCommand<Unit, Unit> ReplaceCommand { get; set; }
-        public ReactiveCommand<Unit, Task> AddCommand { get; set; }
-        public ReactiveCommand<Unit, Task> EditCommand { get; set; }
+        public ReactiveCommand<RxVoid, RxVoid> DialogCommand { get; set; }
+        public ReactiveCommand<RxVoid, RxVoid> LoadedCommand { get; set; }
+        public ReactiveCommand<RxVoid, RxVoid> ReplaceCommand { get; set; }
+        public ReactiveCommand<RxVoid, Task> AddCommand { get; set; }
+        public ReactiveCommand<RxVoid, Task> EditCommand { get; set; }
         public ReactiveCommand<PLCConfig, Task> RemoveCommand { get; set; }
 
         [Reactive]
-        public PLCConfig EditingConfig { get; set; }
+        public partial PLCConfig EditingConfig { get; set; }
 
         [Reactive]
-        public PLCConfig SelectedConfig { get; set; }
+        public partial PLCConfig SelectedConfig { get; set; }
 
         [Reactive]
-        public List<PLCConfig> Configs { get; set; }
+        public partial List<PLCConfig> Configs { get; set; }
 
         public Array CpuTypes { get; } = Enum.GetValues(typeof(CpuType));
 
@@ -58,7 +59,7 @@ namespace DebuggingTool.ViewModels
                     CreateDate = SelectedConfig.CreateDate,
                 };
             });
-            AddCommand = ReactiveCommand.CreateFromTask<Unit, Task>(async _ =>
+            AddCommand = ReactiveCommand.CreateFromTask<RxVoid, Task>(async _ =>
             {
                 try
                 {
@@ -75,7 +76,7 @@ namespace DebuggingTool.ViewModels
                 }
                 return Task.CompletedTask;
             });
-            EditCommand = ReactiveCommand.CreateFromTask<Unit, Task>(async _ =>
+            EditCommand = ReactiveCommand.CreateFromTask<RxVoid, Task>(async _ =>
             {
                 try
                 {

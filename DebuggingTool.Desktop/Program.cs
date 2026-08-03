@@ -2,8 +2,7 @@
 using Avalonia;
 using DebuggingTool.Services;
 using Prism.Ioc;
-using Projektanker.Icons.Avalonia;
-using Projektanker.Icons.Avalonia.MaterialDesign;
+using ReactiveUI.Avalonia;
 
 namespace DebuggingTool.Desktop;
 
@@ -19,11 +18,11 @@ class Program
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
     {
-        IconProvider.Current.Register<MaterialDesignIconProvider>();
         return AppBuilder
             .Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            .UseReactiveUI(_ => { })
             .LogToTrace()
             .AfterSetup(builder =>
             {

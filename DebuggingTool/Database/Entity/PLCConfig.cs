@@ -1,59 +1,59 @@
 ﻿using System;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using ReactiveUI.SourceGenerators;
 using S7.Net;
 using SQLite;
 
 namespace DebuggingTool.Database.Entity;
 
-public class PLCConfig : ReactiveObject
+public partial class PLCConfig : ReactiveObject
 {
     [PrimaryKey]
     public Guid Id { get; set; }
 
     [Reactive]
-    public string Name { get; set; }
+    public partial string Name { get; set; }
     public DateTime CreateDate { get; set; } = DateTime.Now;
 
     /// <summary>
     /// PLC IP地址
     /// </summary>
     [Reactive]
-    public string IP { get; set; } = "192.168.0.1";
+    public partial string IP { get; set; } = "192.168.0.1";
 
     /// <summary>
     /// PLC CPU类型（s7netplus用）
     /// </summary>
     [Reactive]
-    public CpuType CpuType { get; set; } = CpuType.S71200;
+    public partial CpuType CpuType { get; set; } = CpuType.S71200;
 
     /// <summary>
     /// 端口
     /// </summary>
     [Reactive]
-    public int Port { get; set; } = 102;
+    public partial int Port { get; set; } = 102;
 
     /// <summary>
     /// PLC机架号
     /// </summary>
     [Reactive]
-    public short Rack { get; set; } = 0;
+    public partial short Rack { get; set; } = 0;
 
     /// <summary>
     /// PLC插槽号
     /// </summary>
     [Reactive]
-    public short Slot { get; set; } = 1;
+    public partial short Slot { get; set; } = 1;
 
     /// <summary>
     /// 数据块
     /// </summary>
     [Reactive]
-    public int DBNumber { get; set; } = 1;
+    public partial int DBNumber { get; set; } = 1;
 
     /// <summary>
     /// 执行间隔
     /// </summary>
     [Reactive]
-    public int IntervalMs { get; set; } = 100;
+    public partial int IntervalMs { get; set; } = 100;
 }

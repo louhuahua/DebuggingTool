@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Preferences;
-using Avalonia.ReactiveUI;
 using Avalonia.Styling;
 using DebuggingTool.Constants;
 using DebuggingTool.Region;
@@ -14,6 +13,7 @@ using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Regions;
 using ReactiveUI;
+using ReactiveUI.Primitives.Concurrency;
 using System;
 
 namespace DebuggingTool;
@@ -63,7 +63,7 @@ public class App : PrismApplication
     public override void OnFrameworkInitializationCompleted()
     {
         base.OnFrameworkInitializationCompleted();
-        RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+        RxSchedulers.MainThreadScheduler = AvaloniaScheduler.Instance;
     }
 
     protected override void OnInitialized()

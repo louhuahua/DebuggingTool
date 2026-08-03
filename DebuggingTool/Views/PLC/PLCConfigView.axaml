@@ -4,9 +4,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="clr-namespace:DebuggingTool.Behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-    xmlns:ic="https://github.com/projektanker/icons.avalonia"
+    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Xaml.Behaviors.Interactivity"
+    xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Xaml.Behaviors.Interactions"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
@@ -74,19 +74,21 @@
                 Margin="50,0,0,0"
                 Padding="2"
                 HorizontalAlignment="Left"
-                ic:Attached.Icon="mdi-plus-thick"
                 Classes="Flat Icon"
                 Command="{Binding AddCommand}"
-                FontSize="30" />
+                FontSize="30">
+                <materialIcons:MaterialIcon Width="30" Height="30" Kind="PlusThick" />
+            </Button>
             <Button
                 Width="40"
                 Margin="0,0,50,0"
                 Padding="2"
                 HorizontalAlignment="Right"
-                ic:Attached.Icon="mdi-content-save-edit"
                 Classes="Flat Icon"
                 Command="{Binding EditCommand}"
-                FontSize="30" />
+                FontSize="30">
+                <materialIcons:MaterialIcon Width="30" Height="30" Kind="ContentSaveEdit" />
+            </Button>
         </Panel>
 
         <ScrollViewer>
@@ -115,12 +117,13 @@
                                     Margin="0,0,40,0"
                                     Padding="0"
                                     HorizontalAlignment="Center"
-                                    ic:Attached.Icon="mdi-delete-forever"
                                     BorderThickness="0"
                                     Command="{Binding DataContext.RemoveCommand, ElementName=PLCConfigGrid}"
                                     CommandParameter="{Binding}"
                                     FontSize="25"
-                                    Foreground="Orange" />
+                                    Foreground="Orange">
+                                    <materialIcons:MaterialIcon Width="25" Height="25" Kind="DeleteForever" />
+                                </Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

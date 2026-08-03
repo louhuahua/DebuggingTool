@@ -5,9 +5,9 @@
     xmlns:behaviors="clr-namespace:DebuggingTool.Behaviors"
     xmlns:constans="clr-namespace:DebuggingTool.Constants"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-    xmlns:ic="https://github.com/projektanker/icons.avalonia"
+    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Xaml.Behaviors.Interactivity"
+    xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Xaml.Behaviors.Interactions"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:suki="https://github.com/kikipoulet/SukiUI"
@@ -41,11 +41,12 @@
                 <Button
                     Margin="0,-10,55,0"
                     HorizontalAlignment="Right"
-                    ic:Attached.Icon="mdi-chevron-down"
                     BorderThickness="0"
                     Command="{Binding ExpandCommand}"
                     FontSize="35"
-                    FontWeight="Bold" />
+                    FontWeight="Bold">
+                    <materialIcons:MaterialIcon Width="25" Height="25" Kind="ChevronDown" />
+                </Button>
                 <ToggleButton
                     x:Name="Switch"
                     Margin="0,-10,0,0"
@@ -102,29 +103,32 @@
                         Margin="30,0,0,0"
                         Padding="2"
                         HorizontalAlignment="Left"
-                        ic:Attached.Icon="mdi-plus-thick"
                         Classes="Flat Icon"
                         Command="{Binding AddCommand}"
-                        FontSize="30" />
+                        FontSize="30">
+                        <materialIcons:MaterialIcon Width="30" Height="30" Kind="PlusThick" />
+                    </Button>
                     <Button
                         Width="40"
                         Margin="0,0,0,0"
                         Padding="2"
                         HorizontalAlignment="Center"
-                        ic:Attached.Icon="mdi-content-save-edit"
                         Classes="Flat Icon"
                         Command="{Binding EditCommand}"
-                        FontSize="30" />
+                        FontSize="30">
+                        <materialIcons:MaterialIcon Width="30" Height="30" Kind="ContentSaveEdit" />
+                    </Button>
                     <Button
                         Width="40"
                         Margin="0,0,30,0"
                         Padding="2"
                         HorizontalAlignment="Right"
-                        ic:Attached.Icon="mdi-delete-forever"
                         BorderThickness="0"
                         Command="{Binding RemoveCommand}"
                         FontSize="40"
-                        Foreground="Orange" />
+                        Foreground="Orange">
+                        <materialIcons:MaterialIcon Width="35" Height="35" Kind="DeleteForever" />
+                    </Button>
                 </Panel>
             </StackPanel>
             <ScrollViewer>

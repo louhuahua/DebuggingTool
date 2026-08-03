@@ -3,9 +3,9 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-    xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-    xmlns:ic="https://github.com/projektanker/icons.avalonia"
+    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Xaml.Behaviors.Interactivity"
+    xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Xaml.Behaviors.Interactions"
+    xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:view="clr-namespace:DebuggingTool.Views"
@@ -34,7 +34,7 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <ic:Icon FontSize="15" Value="mdi-monitor-dashboard" />
+                        <materialIcons:MaterialIcon Width="15" Height="15" Kind="MonitorDashboard" />
                         <TextBlock
                             Classes="TabName"
                             FontSize="15"
@@ -49,7 +49,7 @@
             <!--<TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <ic:Icon FontSize="15" Value="mdi-ip-network" />
+                        <materialIcons:MaterialIcon Width="15" Height="15" Kind="IpNetwork" />
                         <TextBlock
                             Classes="TabName"
                             FontSize="15"

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using AvaloniaDialogs.Views;
 using DebuggingTool.Database;
@@ -12,62 +11,65 @@ using DebuggingTool.PLC;
 using DebuggingTool.Services;
 using DebuggingTool.Test;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
+using ReactiveUI.Primitives;
+using ReactiveUI.SourceGenerators;
 using S7.Net;
 
 namespace DebuggingTool.ViewModels
 {
-    public class PLCMonitorViewModel : ReactiveObject
+    public partial class PLCMonitorViewModel : ReactiveObject
     {
         private readonly IVibrationService _vibrationService;
         private S7Service1 s7Service;
         private bool initialized;
 
-        public ReactiveCommand<Unit, Unit> LoadedCommand { get; set; }
-        public ReactiveCommand<Unit, Unit> ExpandCommand { get; set; }
-        public ReactiveCommand<Unit, Unit> ReplaceCommand { get; set; }
-        public ReactiveCommand<Unit, Task> AddCommand { get; set; }
-        public ReactiveCommand<Unit, Task> EditCommand { get; set; }
-        public ReactiveCommand<Unit, Task> RemoveCommand { get; set; }
-        public ReactiveCommand<Unit, Task> WriteCommand { get; set; }
+        public ReactiveCommand<RxVoid, RxVoid> LoadedCommand { get; set; }
+        public ReactiveCommand<RxVoid, RxVoid> ExpandCommand { get; set; }
+        public ReactiveCommand<RxVoid, RxVoid> ReplaceCommand { get; set; }
+        public ReactiveCommand<RxVoid, Task> AddCommand { get; set; }
+        public ReactiveCommand<RxVoid, Task> EditCommand { get; set; }
+        public ReactiveCommand<RxVoid, Task> RemoveCommand { get; set; }
+        public ReactiveCommand<RxVoid, Task> WriteCommand { get; set; }
         public ReactiveCommand<bool, Task> WriteBitCommand { get; set; }
 
         [Reactive]
-        public List<PLCConfig> Configs { get; set; }
+        public partial List<PLCConfig> Configs { get; set; }
 
         [Reactive]
-        public PLCConfig SelectedConfig { get; set; }
+        public partial PLCConfig SelectedConfig { get; set; }
 
         [Reactive]
-        public List<MonitorItem> MonitorItems { get; set; }
+        public partial List<MonitorItem> MonitorItems { get; set; }
 
         [Reactive]
-        public MonitorItem EditingMonitorItem { get; set; }
+        public partial MonitorItem EditingMonitorItem { get; set; }
 
         [Reactive]
-        public MonitorItem SelectedMonitorItem { get; set; }
+        public partial MonitorItem SelectedMonitorItem { get; set; }
 
         [Reactive]
-        public bool Expanded { get; set; }
+        public partial bool Expanded { get; set; }
 
         [Reactive]
-        public bool Monitoring { get; set; }
+        public partial bool Monitoring { get; set; }
 
         public Array VarTypes { get; } = Enum.GetValues(typeof(VarType));
 
         [Reactive]
-        public bool SendLog { get; set; }
+        public partial bool SendLog { get; set; }
 
         [Reactive]
-        public string WriteValue { get; set; }
+        public partial string WriteValue { get; set; }
 
         public PLCMonitorViewModel(IVibrationService vibrationService)
         {
             _vibrationService = vibrationService;
 
             #region 监控属性
-            this.WhenAnyValue(x => x.Expanded)
-                .Subscribe(item =>
+            System.ObservableExtensions.Subscribe(
+                this.WhenAnyValue(x => x.Expanded),
+                item =>
                 {
                     if (item)
                     {
@@ -75,8 +77,9 @@ namespace DebuggingTool.ViewModels
                     }
                 });
 
-            this.WhenAnyValue(x => x.Monitoring)
-                .Subscribe(async item =>
+            System.ObservableExtensions.Subscribe(
+                this.WhenAnyValue(x => x.Monitoring),
+                async item =>
                 {
                     _vibrationService?.Vibrate();
                     if (item)
@@ -94,23 +97,33 @@ namespace DebuggingTool.ViewModels
                     }
                 });
 
-            this.WhenAnyValue(x => x.SelectedConfig)
-                .Where(config => config != null)
-                .SelectMany(config =>
+            var monitorItems = System.Reactive.Linq.Observable.SelectMany(
+                System.Reactive.Linq.Observable.Where(
+                    this.WhenAnyValue(x => x.SelectedConfig),
+                    config => config != null
+                ),
+                config =>
                     DB.Client.Table<MonitorItem>()
                         .Where(m => m.PLCConfigId == config.Id)
                         .ToListAsync()
-                )
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(items =>
+            );
+            var monitorItemsOnMainThread =
+                ReactiveUI.Primitives.LinqExtensions.ObserveOn(
+                    monitorItems,
+                    RxSchedulers.MainThreadScheduler
+                );
+            System.ObservableExtensions.Subscribe(monitorItemsOnMainThread, items =>
                 {
                     Monitoring = false;
                     MonitorItems = items;
                 });
 
-            this.WhenAnyValue(x => x.MonitorItems)
-                .Where(items => items != null)
-                .Subscribe(items =>
+            System.ObservableExtensions.Subscribe(
+                System.Reactive.Linq.Observable.Where(
+                    this.WhenAnyValue(x => x.MonitorItems),
+                    items => items != null
+                ),
+                items =>
                 {
                     if (s7Service != null)
                     {
@@ -143,7 +156,7 @@ namespace DebuggingTool.ViewModels
                     Count = SelectedMonitorItem.Count,
                 };
             });
-            AddCommand = ReactiveCommand.CreateFromTask<Unit, Task>(async _ =>
+            AddCommand = ReactiveCommand.CreateFromTask<RxVoid, Task>(async _ =>
             {
                 try
                 {
@@ -170,7 +183,7 @@ namespace DebuggingTool.ViewModels
                 }
                 return Task.CompletedTask;
             });
-            EditCommand = ReactiveCommand.CreateFromTask<Unit, Task>(async _ =>
+            EditCommand = ReactiveCommand.CreateFromTask<RxVoid, Task>(async _ =>
             {
                 try
                 {
@@ -206,7 +219,7 @@ namespace DebuggingTool.ViewModels
                 return Task.CompletedTask;
             });
 
-            RemoveCommand = ReactiveCommand.CreateFromTask<Unit, Task>(async _ =>
+            RemoveCommand = ReactiveCommand.CreateFromTask<RxVoid, Task>(async _ =>
             {
                 try
                 {
@@ -229,7 +242,7 @@ namespace DebuggingTool.ViewModels
                 return Task.CompletedTask;
             });
 
-            WriteCommand = ReactiveCommand.CreateFromTask<Unit, Task>(async _ =>
+            WriteCommand = ReactiveCommand.CreateFromTask<RxVoid, Task>(async _ =>
             {
                 try
                 {

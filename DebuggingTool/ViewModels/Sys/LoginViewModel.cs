@@ -3,17 +3,17 @@ using DebuggingTool.Region;
 using DebuggingTool.Views;
 using Prism.Commands;
 using Prism.Regions;
-using ReactiveUI.Fody.Helpers;
+using ReactiveUI.SourceGenerators;
 
 namespace DebuggingTool.ViewModels
 {
-    public class LoginViewModel : ViewModelBase
+    public partial class LoginViewModel : ViewModelBase
     {
         [Reactive]
-        public string Username { get; set; }
+        public partial string Username { get; set; }
 
         [Reactive]
-        public string Password { get; set; }
+        public partial string Password { get; set; }
         public ICommand LoginCommand { get; }
 
         public LoginViewModel(IRegionManager regionManager)

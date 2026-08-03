@@ -2,13 +2,7 @@
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
-using Avalonia;
 using Avalonia.Android;
-using DebuggingTool.Android.Services;
-using DebuggingTool.Services;
-using Prism.Ioc;
-using Projektanker.Icons.Avalonia;
-using Projektanker.Icons.Avalonia.MaterialDesign;
 
 namespace DebuggingTool.Android;
 
@@ -21,7 +15,7 @@ namespace DebuggingTool.Android;
         | ConfigChanges.ScreenSize
         | ConfigChanges.UiMode
 )]
-public class MainActivity : AvaloniaMainActivity<App>
+public class MainActivity : AvaloniaMainActivity
 {
     protected override void OnCreate(Bundle? savedInstanceState)
     {
@@ -30,14 +24,5 @@ public class MainActivity : AvaloniaMainActivity<App>
             Window?.SetSoftInputMode(SoftInput.AdjustResize);
         }
         base.OnCreate(savedInstanceState);
-        var container = ContainerLocator.Current;
-        container.RegisterSingleton<IVibrationService, AndroidVibrationService>();
-    }
-
-    protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
-    {
-        IconProvider.Current.Register<MaterialDesignIconProvider>();
-
-        return base.CustomizeAppBuilder(builder).WithInterFont();
     }
 }

@@ -1,13 +1,13 @@
 ﻿using DebuggingTool.Services;
 using ReactiveUI;
-using System.Reactive;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 
 namespace DebuggingTool.ViewModels
 {
     public class PLCViewModel : ReactiveObject
     {
         private readonly IVibrationService _vibrationService;
-        public ReactiveCommand<Unit, Unit> ChangeTabCommand { get; set; }
+        public ReactiveCommand<RxVoid, RxVoid> ChangeTabCommand { get; set; }
 
         public PLCViewModel(IVibrationService vibrationService)
         {

@@ -4,12 +4,12 @@ using Prism;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using ReactiveUI.SourceGenerators;
 using System;
 
 namespace DebuggingTool.ViewModels;
 
-public class ViewModelBase : ReactiveObject, INavigationAware, IActiveAware
+public partial class ViewModelBase : ReactiveObject, INavigationAware, IActiveAware
 {
     private readonly string _baseNavPage = nameof(LoginView);
     public readonly IRegionManager _regionManager;
@@ -33,7 +33,7 @@ public class ViewModelBase : ReactiveObject, INavigationAware, IActiveAware
     public event EventHandler IsActiveChanged;
 
     [Reactive]
-    public bool IsActive { get; set; }
+    public partial bool IsActive { get; set; }
 
     public ViewModelBase(IRegionManager regionManager)
     {

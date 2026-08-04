@@ -64,7 +64,7 @@
                         Width="80"
                         HorizontalAlignment="Left"
                         Text="{Binding EditingMonitorItem.Name}"
-                        Watermark="Name" />
+                        PlaceholderText="Name" />
                     <ComboBox
                         Width="120"
                         Margin="0,-5,-5,0"
@@ -78,24 +78,24 @@
                         Width="50"
                         HorizontalAlignment="Left"
                         Text="{Binding EditingMonitorItem.DB}"
-                        Watermark="DB" />
+                        PlaceholderText="DB" />
                     <TextBox
                         Width="50"
                         Margin="0,0,60,0"
                         HorizontalAlignment="Center"
                         Text="{Binding EditingMonitorItem.StartByteAdr}"
-                        Watermark="StartByteAdr" />
+                        PlaceholderText="StartByteAdr" />
                     <TextBox
                         Width="50"
                         Margin="60,0,0,0"
                         HorizontalAlignment="Center"
                         Text="{Binding EditingMonitorItem.BitAdr}"
-                        Watermark="BitAdr" />
+                        PlaceholderText="BitAdr" />
                     <TextBox
                         Width="50"
                         HorizontalAlignment="Right"
                         Text="{Binding EditingMonitorItem.Count}"
-                        Watermark="Count" />
+                        PlaceholderText="Count" />
                 </Panel>
                 <Panel Margin="0,20,0,0" HorizontalAlignment="Stretch">
                     <Button

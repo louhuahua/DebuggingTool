@@ -28,12 +28,12 @@
                         Grid.Row="2"
                         VerticalContentAlignment="Center"
                         Text="{Binding Username, Mode=TwoWay}"
-                        Watermark="" />
+                        PlaceholderText="" />
                     <TextBlock Grid.Row="4" Text="" />
                     <TextBox
                         Grid.Row="6"
                         Text="{Binding Password, Mode=TwoWay}"
-                        Watermark="" />
+                        PlaceholderText="" />
                     <Button
                         Grid.Row="9"
                         Padding="12,8"

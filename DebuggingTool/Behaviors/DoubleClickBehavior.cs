@@ -2,8 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using System;
-using System.Reactive;
 using System.Windows.Input;
+using RxVoid = ReactiveUI.Primitives.RxVoid;
 
 namespace DebuggingTool.Behaviors;
 
@@ -36,10 +36,11 @@ public static class DoubleClickBehavior
         var control = (Control)sender;
         var command = GetCommand(control);
 
-        if (command?.CanExecute(control.DataContext) == true)
+        var parameter = RxVoid.Default;
+
+        if (command?.CanExecute(parameter) == true)
         {
-            //command.Execute(control.DataContext);
-            command.Execute(Unit.Default);
+            command.Execute(parameter);
         }
     }
 

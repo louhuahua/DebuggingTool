@@ -8,7 +8,15 @@
         <entry key="Assets/Styles/AppStyles.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
         <entry key="Views/HomePageContainerView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
         <entry key="Views/LoginView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/PLC/PLCConfigView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/PLC/PLCMonitorView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/PLC/PLCView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
         <entry key="Views/PLCMonitorView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/Sys/HomePageContainerView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/Sys/LandingView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/Sys/LoginView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/Sys/MainView.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
+        <entry key="Views/Sys/MainWindow.axaml" value="../DebuggingTool.Desktop/DebuggingTool.Desktop.csproj" />
       </map>
     </option>
   </component>

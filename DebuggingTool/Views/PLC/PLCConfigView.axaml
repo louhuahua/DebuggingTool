@@ -27,12 +27,12 @@
                 Width="120"
                 HorizontalAlignment="Left"
                 Text="{Binding EditingConfig.Name}"
-                Watermark="Name" />
+                PlaceholderText="Name" />
             <TextBox
                 Width="120"
                 HorizontalAlignment="Right"
                 Text="{Binding EditingConfig.IP}"
-                Watermark="Ip" />
+                PlaceholderText="Ip" />
         </Panel>
         <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
             <ComboBox
@@ -48,24 +48,24 @@
                 Width="120"
                 HorizontalAlignment="Right"
                 Text="{Binding EditingConfig.Port}"
-                Watermark="Port" />
+                PlaceholderText="Port" />
         </Panel>
         <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
             <TextBox
                 Width="80"
                 HorizontalAlignment="Left"
                 Text="{Binding EditingConfig.Rack}"
-                Watermark="Rack" />
+                PlaceholderText="Rack" />
             <TextBox
                 Width="80"
                 HorizontalAlignment="Center"
                 Text="{Binding EditingConfig.Slot}"
-                Watermark="Slot" />
+                PlaceholderText="Slot" />
             <TextBox
                 Width="80"
                 HorizontalAlignment="Right"
                 Text="{Binding EditingConfig.IntervalMs}"
-                Watermark="IntervalMs" />
+                PlaceholderText="IntervalMs" />
         </Panel>
 
         <Panel Margin="0,20,0,0" HorizontalAlignment="Stretch">
@@ -118,7 +118,7 @@
                                     Padding="0"
                                     HorizontalAlignment="Center"
                                     BorderThickness="0"
-                                    Command="{Binding DataContext.RemoveCommand, ElementName=PLCConfigGrid}"
+                                    Command="{Binding ((vm:PLCConfigViewModel)DataContext).RemoveCommand, ElementName=PLCConfigGrid}"
                                     CommandParameter="{Binding}"
                                     FontSize="25"
                                     Foreground="Orange">

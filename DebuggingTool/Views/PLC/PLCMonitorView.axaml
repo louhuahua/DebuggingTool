@@ -45,7 +45,10 @@
                     Command="{Binding ExpandCommand}"
                     FontSize="35"
                     FontWeight="Bold">
-                    <materialIcons:MaterialIcon Width="25" Height="25" Kind="ChevronDown" />
+                    <materialIcons:MaterialIcon
+                        Width="25"
+                        Height="25"
+                        Kind="ChevronDown" />
                 </Button>
                 <ToggleButton
                     x:Name="Switch"
@@ -63,8 +66,8 @@
                     <TextBox
                         Width="80"
                         HorizontalAlignment="Left"
-                        Text="{Binding EditingMonitorItem.Name}"
-                        PlaceholderText="Name" />
+                        PlaceholderText="Name"
+                        Text="{Binding EditingMonitorItem.Name}" />
                     <ComboBox
                         Width="120"
                         Margin="0,-5,-5,0"
@@ -73,29 +76,29 @@
                         ItemsSource="{Binding VarTypes}"
                         SelectedItem="{Binding EditingMonitorItem.VarType}" />
                 </Panel>
-                <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
+                <Panel Margin="0,5,0,0" HorizontalAlignment="Stretch">
                     <TextBox
                         Width="50"
                         HorizontalAlignment="Left"
-                        Text="{Binding EditingMonitorItem.DB}"
-                        PlaceholderText="DB" />
+                        PlaceholderText="DB"
+                        Text="{Binding EditingMonitorItem.DB}" />
                     <TextBox
                         Width="50"
                         Margin="0,0,60,0"
                         HorizontalAlignment="Center"
-                        Text="{Binding EditingMonitorItem.StartByteAdr}"
-                        PlaceholderText="StartByteAdr" />
+                        PlaceholderText="StartByteAdr"
+                        Text="{Binding EditingMonitorItem.StartByteAdr}" />
                     <TextBox
                         Width="50"
                         Margin="60,0,0,0"
                         HorizontalAlignment="Center"
-                        Text="{Binding EditingMonitorItem.BitAdr}"
-                        PlaceholderText="BitAdr" />
+                        PlaceholderText="BitAdr"
+                        Text="{Binding EditingMonitorItem.BitAdr}" />
                     <TextBox
                         Width="50"
                         HorizontalAlignment="Right"
-                        Text="{Binding EditingMonitorItem.Count}"
-                        PlaceholderText="Count" />
+                        PlaceholderText="Count"
+                        Text="{Binding EditingMonitorItem.Count}" />
                 </Panel>
                 <Panel Margin="0,20,0,0" HorizontalAlignment="Stretch">
                     <Button
@@ -106,7 +109,10 @@
                         Classes="Flat Icon"
                         Command="{Binding AddCommand}"
                         FontSize="30">
-                        <materialIcons:MaterialIcon Width="30" Height="30" Kind="PlusThick" />
+                        <materialIcons:MaterialIcon
+                            Width="30"
+                            Height="30"
+                            Kind="PlusThick" />
                     </Button>
                     <Button
                         Width="40"
@@ -116,7 +122,10 @@
                         Classes="Flat Icon"
                         Command="{Binding EditCommand}"
                         FontSize="30">
-                        <materialIcons:MaterialIcon Width="30" Height="30" Kind="ContentSaveEdit" />
+                        <materialIcons:MaterialIcon
+                            Width="30"
+                            Height="30"
+                            Kind="ContentSaveEdit" />
                     </Button>
                     <Button
                         Width="40"
@@ -127,7 +136,10 @@
                         Command="{Binding RemoveCommand}"
                         FontSize="40"
                         Foreground="Orange">
-                        <materialIcons:MaterialIcon Width="35" Height="35" Kind="DeleteForever" />
+                        <materialIcons:MaterialIcon
+                            Width="35"
+                            Height="35"
+                            Kind="DeleteForever" />
                     </Button>
                 </Panel>
             </StackPanel>
@@ -162,7 +174,7 @@
                 FontSize="22"
                 Text="{Binding WriteValue}" />
 
-            <Panel Margin="0,0,20,0">
+            <Panel Margin="0,5,20,0">
                 <Button
                     Width="50"
                     Height="20"
@@ -204,8 +216,5 @@
 
         </StackPanel>
 
-        <!--<StackPanel Grid.Row="1" Margin="0,0,20,15">
-
-        </StackPanel>-->
     </Grid>
 </UserControl>

@@ -26,15 +26,15 @@
             <TextBox
                 Width="120"
                 HorizontalAlignment="Left"
-                Text="{Binding EditingConfig.Name}"
-                PlaceholderText="Name" />
+                PlaceholderText="Name"
+                Text="{Binding EditingConfig.Name}" />
             <TextBox
                 Width="120"
                 HorizontalAlignment="Right"
-                Text="{Binding EditingConfig.IP}"
-                PlaceholderText="Ip" />
+                PlaceholderText="Ip"
+                Text="{Binding EditingConfig.IP}" />
         </Panel>
-        <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
+        <Panel Margin="0,5,0,0" HorizontalAlignment="Stretch">
             <ComboBox
                 Width="130"
                 Margin="-5,-5,0,0"
@@ -47,25 +47,25 @@
             <TextBox
                 Width="120"
                 HorizontalAlignment="Right"
-                Text="{Binding EditingConfig.Port}"
-                PlaceholderText="Port" />
+                PlaceholderText="Port"
+                Text="{Binding EditingConfig.Port}" />
         </Panel>
-        <Panel Margin="0,0,0,0" HorizontalAlignment="Stretch">
+        <Panel Margin="0,5,0,0" HorizontalAlignment="Stretch">
             <TextBox
                 Width="80"
                 HorizontalAlignment="Left"
-                Text="{Binding EditingConfig.Rack}"
-                PlaceholderText="Rack" />
+                PlaceholderText="Rack"
+                Text="{Binding EditingConfig.Rack}" />
             <TextBox
                 Width="80"
                 HorizontalAlignment="Center"
-                Text="{Binding EditingConfig.Slot}"
-                PlaceholderText="Slot" />
+                PlaceholderText="Slot"
+                Text="{Binding EditingConfig.Slot}" />
             <TextBox
                 Width="80"
                 HorizontalAlignment="Right"
-                Text="{Binding EditingConfig.IntervalMs}"
-                PlaceholderText="IntervalMs" />
+                PlaceholderText="IntervalMs"
+                Text="{Binding EditingConfig.IntervalMs}" />
         </Panel>
 
         <Panel Margin="0,20,0,0" HorizontalAlignment="Stretch">
@@ -77,7 +77,10 @@
                 Classes="Flat Icon"
                 Command="{Binding AddCommand}"
                 FontSize="30">
-                <materialIcons:MaterialIcon Width="30" Height="30" Kind="PlusThick" />
+                <materialIcons:MaterialIcon
+                    Width="30"
+                    Height="30"
+                    Kind="PlusThick" />
             </Button>
             <Button
                 Width="40"
@@ -87,7 +90,10 @@
                 Classes="Flat Icon"
                 Command="{Binding EditCommand}"
                 FontSize="30">
-                <materialIcons:MaterialIcon Width="30" Height="30" Kind="ContentSaveEdit" />
+                <materialIcons:MaterialIcon
+                    Width="30"
+                    Height="30"
+                    Kind="ContentSaveEdit" />
             </Button>
         </Panel>
 
@@ -122,7 +128,10 @@
                                     CommandParameter="{Binding}"
                                     FontSize="25"
                                     Foreground="Orange">
-                                    <materialIcons:MaterialIcon Width="25" Height="25" Kind="DeleteForever" />
+                                    <materialIcons:MaterialIcon
+                                        Width="25"
+                                        Height="25"
+                                        Kind="DeleteForever" />
                                 </Button>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

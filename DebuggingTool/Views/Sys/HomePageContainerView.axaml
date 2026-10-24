@@ -34,7 +34,10 @@
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <materialIcons:MaterialIcon Width="15" Height="15" Kind="MonitorDashboard" />
+                        <materialIcons:MaterialIcon
+                            Width="15"
+                            Height="15"
+                            Kind="MonitorDashboard" />
                         <TextBlock
                             Classes="TabName"
                             FontSize="15"
